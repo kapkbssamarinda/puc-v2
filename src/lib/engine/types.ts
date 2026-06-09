@@ -167,6 +167,9 @@ export interface HasilPerhitungan {
   tabelProbabilitas: ProbabilitasOlahan[]
 
   metode: MetodePerhitungan
+
+  // Peringatan non-blokir (misal: diskonto < kenaikan gaji)
+  warnings?: string[]
 }
 
 // ─── Input Estimasi Rata-rata ─────────────────────────────────────────────────

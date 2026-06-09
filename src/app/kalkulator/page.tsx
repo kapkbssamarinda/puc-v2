@@ -345,16 +345,22 @@ export default function KalkulatorPage() {
                     />
 
                     <div className="flex gap-2 items-end">
-                      <Select
-                        label="Jenis GL Aktuaria"
-                        value={rkon.glTipe}
-                        onChange={(e) => setRkon((s) => ({
-                          ...s, glTipe: e.target.value as 'keuntungan' | 'kerugian',
-                        }))}
-                      >
-                        <option value="keuntungan">Keuntungan (−NKKIP)</option>
-                        <option value="kerugian">Kerugian (+NKKIP)</option>
-                      </Select>
+                      <div className="flex items-end gap-1">
+                        <Select
+                          label="Jenis GL Aktuaria"
+                          value={rkon.glTipe}
+                          onChange={(e) => setRkon((s) => ({
+                            ...s, glTipe: e.target.value as 'keuntungan' | 'kerugian',
+                          }))}
+                        >
+                          <option value="keuntungan">Keuntungan Aktuaria — mengurangi NKKIP</option>
+                          <option value="kerugian">Kerugian Aktuaria — menambah NKKIP</option>
+                        </Select>
+                        <InfoTooltip
+                          text="Keuntungan aktuaria (negatif) terjadi saat asumsi lebih baik dari perkiraan — misalnya tingkat diskonto naik atau karyawan lebih banyak yang resign. Kerugian aktuaria (positif) terjadi sebaliknya. Keduanya diakui di OCI, bukan P&L."
+                          side="right"
+                        />
+                      </div>
                       <Input
                         label="Jumlah GL Aktuaria"
                         prefix="Rp"
@@ -393,6 +399,13 @@ export default function KalkulatorPage() {
         <div className="lg:sticky lg:top-20 space-y-4">
           {hasil ? (
             <>
+              {hasil.warnings && hasil.warnings.length > 0 && (
+                <Alert variant="warning" title="Perhatian Asumsi">
+                  <ul className="text-xs space-y-0.5 mt-1">
+                    {hasil.warnings.map((w, i) => <li key={i}>{w}</li>)}
+                  </ul>
+                </Alert>
+              )}
               <ResultsSummary hasil={hasil} />
               {hasil.rekonsiliasi && (
                 <RekonsiliasiPanel rekonsiliasi={hasil.rekonsiliasi} />

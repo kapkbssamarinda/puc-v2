@@ -95,7 +95,7 @@ export function hitungPUCEconomic(input: InputPerhitungan): HasilPerhitungan {
     proyeksiImbalanPensiun: imbalanPensiun,
     nkkip,
     biayaJasaKini:  biayaJasa,
-    biayaBunga:     tingkatDiskonto * nkkip,
+    biayaBunga:     0,
     nkkipPerJenis:      { PENSIUN: nkkip },
     biayaJasaPerJenis:  { PENSIUN: biayaJasa },
     details:            [detail],

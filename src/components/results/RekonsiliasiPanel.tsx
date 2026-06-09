@@ -11,6 +11,7 @@ interface Props { rekonsiliasi: RekonsiliasiNKKIP }
 interface Baris {
   label: string
   nilai: number
+  displayNilai?: string
   tooltip?: string
   tebal?: boolean
   pemisah?: boolean
@@ -45,9 +46,16 @@ export function RekonsiliasiPanel({ rekonsiliasi }: Props) {
       warna: biayaJasaLalu < 0 ? 'hijau' : 'abu' as 'hijau' | 'abu',
     }] : []),
     {
-      label: keuntunganKerugianAktuaria >= 0 ? '+/− Kerugian Aktuaria' : '+/− Keuntungan Aktuaria',
+      label: keuntunganKerugianAktuaria >= 0
+        ? '+  Kerugian Aktuaria'
+        : '−  Keuntungan Aktuaria',
       nilai: keuntunganKerugianAktuaria,
-      tooltip: 'Keuntungan/Kerugian Aktuaria (remeasurement). Diakui di OCI, bukan P&L.',
+      displayNilai: keuntunganKerugianAktuaria < 0
+        ? `(${formatRupiah(Math.abs(keuntunganKerugianAktuaria))})`
+        : formatRupiah(keuntunganKerugianAktuaria),
+      tooltip: keuntunganKerugianAktuaria >= 0
+        ? 'Kerugian aktuaria menambah NKKIP. Diakui di OCI (Penghasilan Komprehensif Lain), bukan P&L.'
+        : 'Keuntungan aktuaria mengurangi NKKIP. Diakui di OCI (Penghasilan Komprehensif Lain), bukan P&L.',
       warna: keuntunganKerugianAktuaria < 0 ? 'hijau' : 'merah',
     },
     ...(pembayaranImbalan !== 0 ? [{
@@ -105,7 +113,7 @@ export function RekonsiliasiPanel({ rekonsiliasi }: Props) {
                       </div>
                     </td>
                     <td className={`px-3 py-2 text-right tabular-nums font-${b.tebal ? 'bold' : 'medium'} ${warnaKelas(b)}`}>
-                      {formatRupiah(b.nilai)}
+                      {b.displayNilai ?? formatRupiah(b.nilai)}
                     </td>
                   </tr>
                 </>

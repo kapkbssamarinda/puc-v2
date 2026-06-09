@@ -140,7 +140,7 @@ export function exportExcelSingle(hasil: HasilPerhitungan): void {
       rekData.push(['+ Biaya Jasa Lalu (PSC)', r.biayaJasaLalu])
     }
     if (gl !== 0) {
-      rekData.push([`+/- ${glLabel}`, gl])
+      rekData.push([gl >= 0 ? `+ ${glLabel}` : `- ${glLabel}`, gl])
     }
     rekData.push(
       ['- Pembayaran Imbalan', -r.pembayaranImbalan],

@@ -92,9 +92,9 @@ C. REKONSILIASI NKKIP
     // Data rekonsiliasi lengkap tersedia
     const gl = rekonsiliasi.keuntunganKerugianAktuaria
     const glLabel = gl < 0
-      ? `  +/− Keuntungan aktuaria : ${formatRupiah(gl)}  (OCI)`
+      ? `  −  Keuntungan aktuaria  : (${formatRupiah(Math.abs(gl))})  (OCI)`
       : gl > 0
-        ? `  +/− Kerugian aktuaria  : ${formatRupiah(gl)}  (OCI)`
+        ? `  +  Kerugian aktuaria   : ${formatRupiah(gl)}  (OCI)`
         : null
 
     teks += `

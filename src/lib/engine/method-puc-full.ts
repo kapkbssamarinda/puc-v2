@@ -165,7 +165,7 @@ export function hitungPUCFull(input: InputPerhitungan): HasilPerhitungan {
     proyeksiImbalanPensiun: imbalanPensiun,
     nkkip,
     biayaJasaKini:  biayaJasa,
-    biayaBunga:     tingkatDiskonto * nkkip,
+    biayaBunga:     0,
     nkkipPerJenis,
     biayaJasaPerJenis,
     details,

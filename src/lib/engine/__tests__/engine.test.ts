@@ -97,8 +97,16 @@ describe('validasiInput — asumsi ekonomi', () => {
     expect(() => hitung(buildInput({ tingkatDiskonto: 0.07 }))).not.toThrow()
   })
 
-  it('diskonto < kenaikanGaji → warning "Peringatan:" masuk ke error', () => {
-    expect(() => hitung(buildInput({ tingkatDiskonto: 0.04, tingkatKenaikanGaji: 0.07 }))).toThrow(/Peringatan:/)
+  it('diskonto < kenaikanGaji → tidak throw, tapi hasil.warnings berisi pesan', () => {
+    const hasil = hitung(buildInput({ tingkatDiskonto: 0.04, tingkatKenaikanGaji: 0.07 }))
+    expect(hasil.warnings).toBeDefined()
+    expect(hasil.warnings!.length).toBeGreaterThan(0)
+    expect(hasil.warnings![0]).toMatch(/diskonto.*kenaikan|present value/i)
+  })
+
+  it('diskonto < kenaikanGaji → kalkulasi tetap berjalan, nkkip > 0', () => {
+    const hasil = hitung(buildInput({ tingkatDiskonto: 0.04, tingkatKenaikanGaji: 0.07 }))
+    expect(hasil.nkkip).toBeGreaterThan(0)
   })
 
   it('kenaikanGaji 0.35 (35%) → error berisi "tingkatKenaikanGaji"', () => {
@@ -334,5 +342,60 @@ describe('Rekonsiliasi NKKIP', () => {
       100_000 + hasil.biayaJasaKini + expectedIC + (hasil.biayaJasaLalu ?? 0) + (-3_000) - 5_000
     expect(r.nkkipAkhir).toBeCloseTo(expectedAkhir, 2)
     expect(r.nkkipAkhir).toBeGreaterThan(0)
+  })
+
+  it('GL keuntungan (negatif) mengurangi nkkipAkhir', () => {
+    const baseNkkipAkhir = (() => {
+      const input = { ...inputContoh4(), rekonsiliasiInput: { nkkipAwalPeriode: 100_000 } }
+      return hitung(input).rekonsiliasi!.nkkipAkhir
+    })()
+
+    const withKeuntungan = hitung({
+      ...inputContoh4(),
+      rekonsiliasiInput: {
+        nkkipAwalPeriode: 100_000,
+        keuntunganKerugianAktuaria: -5_000,
+      },
+    })
+
+    expect(withKeuntungan.rekonsiliasi!.nkkipAkhir).toBeCloseTo(baseNkkipAkhir - 5_000, 0)
+  })
+
+  it('GL kerugian (positif) menambah nkkipAkhir', () => {
+    const baseNkkipAkhir = (() => {
+      const input = { ...inputContoh4(), rekonsiliasiInput: { nkkipAwalPeriode: 100_000 } }
+      return hitung(input).rekonsiliasi!.nkkipAkhir
+    })()
+
+    const withKerugian = hitung({
+      ...inputContoh4(),
+      rekonsiliasiInput: {
+        nkkipAwalPeriode: 100_000,
+        keuntunganKerugianAktuaria: 3_000,
+      },
+    })
+
+    expect(withKerugian.rekonsiliasi!.nkkipAkhir).toBeCloseTo(baseNkkipAkhir + 3_000, 0)
+  })
+})
+
+// ─── Test: biayaBunga — semantik IC yang benar ────────────
+describe('biayaBunga — semantik IC yang benar', () => {
+  it('tanpa nkkipAwalPeriode → biayaBunga = 0 meski metode PUC_ECONOMIC', () => {
+    const hasil = hitung(inputContoh4())
+    expect(hasil.biayaBunga).toBe(0)
+  })
+
+  it('dengan nkkipAwalPeriode → biayaBunga = diskonto × nkkipAwal (bukan × nkkip)', () => {
+    const nkkipAwal = 100_000
+    const diskonto  = 0.07
+    const hasil = hitung({ ...inputContoh4(), nkkipAwalPeriode: nkkipAwal })
+    expect(hasil.biayaBunga).toBeCloseTo(diskonto * nkkipAwal, 0)
+    expect(hasil.biayaBunga).not.toBeCloseTo(diskonto * hasil.nkkip, 0)
+  })
+
+  it('verifikasi angka IAI: IC = 7% × 95.000 = 6.650', () => {
+    const hasil = hitung({ ...inputContoh5(), nkkipAwalPeriode: 95_000 })
+    expect(hasil.biayaBunga).toBeCloseTo(6_650, 0)
   })
 })

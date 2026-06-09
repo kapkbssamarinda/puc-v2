@@ -31,9 +31,15 @@ function selisihTahun(a: Date, b: Date): number {
   return (b.getTime() - a.getTime()) / (365.25 * 24 * 60 * 60 * 1000)
 }
 
-/** Validasi input dan kembalikan pesan error (array kosong = valid). */
-function validasiInput(input: InputPerhitungan): string[] {
+interface ValidationResult {
+  errors: string[]
+  warnings: string[]
+}
+
+/** Validasi input dan kembalikan errors (memblok) serta warnings (tidak memblok). */
+function validasiInput(input: InputPerhitungan): ValidationResult {
   const errors: string[] = []
+  const warnings: string[] = []
   const { karyawan, tanggalPerhitungan, usiaPensiun } = input
 
   const tglLahir  = parseDate(karyawan.tanggalLahir)
@@ -44,7 +50,7 @@ function validasiInput(input: InputPerhitungan): string[] {
   if (isNaN(tglMasuk.getTime()))  errors.push('tanggalMasuk tidak valid')
   if (isNaN(tglHitung.getTime())) errors.push('tanggalPerhitungan tidak valid')
 
-  if (errors.length > 0) return errors
+  if (errors.length > 0) return { errors, warnings }
 
   const usiaMasukThn = selisihTahun(tglLahir, tglMasuk)
   if (usiaMasukThn < 15) errors.push('Usia masuk kerja minimal 15 tahun')
@@ -72,8 +78,8 @@ function validasiInput(input: InputPerhitungan): string[] {
     if (tingkatDiskonto >= 0.001 && tingkatDiskonto <= 0.30 &&
         tingkatKenaikanGaji >= 0 && tingkatKenaikanGaji <= 0.30 &&
         tingkatDiskonto <= tingkatKenaikanGaji) {
-      errors.push(
-        `Peringatan: Tingkat diskonto (${diskontoPct}%) harus lebih besar dari kenaikan gaji (${kenaikanPct}%) — present value akan melebihi nominal`
+      warnings.push(
+        `Tingkat diskonto (${diskontoPct}%) lebih kecil atau sama dengan kenaikan gaji (${kenaikanPct}%) — present value akan melebihi nominal`
       )
     }
   }
@@ -100,7 +106,7 @@ function validasiInput(input: InputPerhitungan): string[] {
     }
   }
 
-  return errors
+  return { errors, warnings }
 }
 
 /**
@@ -110,7 +116,7 @@ function validasiInput(input: InputPerhitungan): string[] {
  * @throws Error jika input tidak valid
  */
 export function hitung(input: InputPerhitungan): HasilPerhitungan {
-  const errors = validasiInput(input)
+  const { errors, warnings } = validasiInput(input)
   if (errors.length > 0) throw new Error(`Input tidak valid: ${errors.join('; ')}`)
 
   let hasil: HasilPerhitungan
@@ -121,7 +127,12 @@ export function hitung(input: InputPerhitungan): HasilPerhitungan {
     case 'PUC_FULL':     hasil = hitungPUCFull(input);     break
   }
 
-  // IC = r_diskonto × NKKIP_awal_periode (PSAK 24 par. 120)
+  if (warnings.length > 0) hasil.warnings = warnings
+
+  // IC = tingkat_diskonto × NKKIP_awal_periode (PSAK 24 par. 120)
+  // NKKIP awal = saldo NKKIP dari laporan akhir periode SEBELUMNYA.
+  // Jika tidak diisi user → biayaBunga = 0 (valuasi pertama kali / tidak relevan).
+  // PENTING: jangan gunakan NKKIP periode ini sebagai basis IC.
   // rekonsiliasiInput.nkkipAwalPeriode digunakan sebagai fallback jika input.nkkipAwalPeriode tidak diisi
   const nkkipAwalIC =
     (input.nkkipAwalPeriode && input.nkkipAwalPeriode > 0 ? input.nkkipAwalPeriode : null) ??
@@ -189,7 +200,7 @@ export function hitungBatch(inputs: InputPerhitungan[]): HasilBatch {
 
   const hasil: HasilPerhitungan[] = []
   for (const inp of inputs) {
-    const errors = validasiInput(inp)
+    const { errors } = validasiInput(inp)
     if (errors.length === 0) hasil.push(hitung(inp))
   }
 
