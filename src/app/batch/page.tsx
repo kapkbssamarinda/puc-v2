@@ -14,6 +14,7 @@ import { hitung, hitungBatch } from '@/lib/engine'
 import { parseCSV, downloadCSVTemplate } from '@/lib/csv/parser'
 import { exportExcelBatch, exportExcelRingkas } from '@/lib/export/excel'
 import { exportPDFBatch } from '@/lib/export/pdf'
+import { JurnalPanel } from '@/components/results/JurnalPanel'
 import type {
   MetodePerhitungan, Regulasi, DataKaryawan, HasilPerhitungan, HasilBatch,
   InputPerhitungan,
@@ -740,6 +741,7 @@ export default function BatchPage() {
           </div>
 
           <HasilTable hasilList={hasilList} />
+          <JurnalPanel hasilBatch={hasilBatch} />
         </div>
       )}
     </div>

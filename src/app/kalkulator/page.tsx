@@ -13,6 +13,7 @@ import { ProbabilityTable } from '@/components/results/ProbabilityTable'
 import { DetailsTable } from '@/components/results/DetailsTable'
 import { FSNote } from '@/components/results/FSNote'
 import { RekonsiliasiPanel } from '@/components/results/RekonsiliasiPanel'
+import { JurnalPanel } from '@/components/results/JurnalPanel'
 import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -422,6 +423,7 @@ export default function KalkulatorPage() {
 
       {hasil && (
         <div id="hasil-section" className="space-y-6 pt-4 border-t border-gray-200">
+          <JurnalPanel hasil={hasil} />
           <CalculationSteps hasil={hasil} />
           <MethodComparison input={hasil.input} metodeSaat={metode} />
           {hasil.tabelProbabilitas.length > 0 && (
