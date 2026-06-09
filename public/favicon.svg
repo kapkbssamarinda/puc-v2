@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Background -->
+  <rect width="32" height="32" rx="6" fill="#1B2A4A"/>
+  <!-- Calculator body -->
+  <rect x="7" y="5" width="18" height="22" rx="2" fill="#2563EB"/>
+  <!-- Screen -->
+  <rect x="9" y="7" width="14" height="6" rx="1" fill="#EFF6FF"/>
+  <!-- Screen text -->
+  <text x="22" y="14" font-size="5" fill="#1B2A4A" text-anchor="end" font-family="monospace" font-weight="bold">PUC</text>
+  <!-- Buttons row 1 -->
+  <rect x="9"  y="16" width="3.5" height="2.5" rx="0.5" fill="#93C5FD"/>
+  <rect x="14.25" y="16" width="3.5" height="2.5" rx="0.5" fill="#93C5FD"/>
+  <rect x="19.5" y="16" width="3.5" height="2.5" rx="0.5" fill="#BFDBFE"/>
+  <!-- Buttons row 2 -->
+  <rect x="9"  y="20" width="3.5" height="2.5" rx="0.5" fill="#93C5FD"/>
+  <rect x="14.25" y="20" width="3.5" height="2.5" rx="0.5" fill="#93C5FD"/>
+  <rect x="19.5" y="20" width="3.5" height="2.5" rx="0.5" fill="#BFDBFE"/>
+  <!-- Equals button -->
+  <rect x="9" y="24" width="14" height="2" rx="0.5" fill="#D4A843"/>
+</svg>

@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #F8FAFC;
+    --foreground: #0F172A;
+  }
+
+  body {
+    @apply bg-surface text-gray-900 antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    @apply tracking-tight;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* ── Print styles ─────────────────────────────────────────── */
+@media print {
+  /* Sembunyikan navigasi, tombol, dan elemen non-konten */
+  header,
+  footer,
+  nav,
+  button,
+  [role="navigation"],
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 11pt;
+  }
+
+  main {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Pastikan card/border terlihat */
+  .border,
+  [class*="border-"] {
+    border-color: #ccc !important;
+  }
+
+  /* Tabel: border penuh untuk print */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    page-break-inside: auto;
+  }
+
+  th, td {
+    border: 1px solid #bbb !important;
+    padding: 4px 8px;
+    font-size: 9pt;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+
+  /* Jangan bagi card di tengah halaman */
+  .rounded-lg,
+  .shadow-sm,
+  [class*="shadow"] {
+    box-shadow: none !important;
+  }
+
+  /* Pecah halaman sebelum section utama */
+  .print-break-before {
+    page-break-before: always;
+  }
+
+  .print-break-avoid {
+    page-break-inside: avoid;
+  }
+
+  /* Sembunyikan sticky sidebar di print, tampilkan full-width */
+  .lg\:sticky {
+    position: static !important;
+  }
+
+  /* Font mono untuk formula */
+  pre, code, .font-mono {
+    font-size: 9pt;
+  }
+
+  /* Warna aman untuk print (menghindari tinta boros) */
+  .bg-primary,
+  .bg-secondary {
+    background-color: #1B2A4A !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* URL yang perlu ditampilkan */
+  a[href]:after {
+    content: none;
+  }
+}
