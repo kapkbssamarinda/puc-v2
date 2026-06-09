@@ -14,7 +14,11 @@ import { hitung, hitungBatch } from '@/lib/engine'
 import { parseCSV, downloadCSVTemplate } from '@/lib/csv/parser'
 import { exportExcelBatch, exportExcelRingkas } from '@/lib/export/excel'
 import { exportPDFBatch } from '@/lib/export/pdf'
-import { JurnalPanel } from '@/components/results/JurnalPanel'
+import { JurnalPanel }       from '@/components/results/JurnalPanel'
+import { CalculationSteps } from '@/components/results/CalculationSteps'
+import { DetailsTable }     from '@/components/results/DetailsTable'
+import { ProbabilityTable } from '@/components/results/ProbabilityTable'
+import { FSNote }           from '@/components/results/FSNote'
 import type {
   MetodePerhitungan, Regulasi, DataKaryawan, HasilPerhitungan, HasilBatch,
   InputPerhitungan,
@@ -409,7 +413,15 @@ function TabCSV({
 
 // ─── Tabel Hasil ──────────────────────────────────────────────────────────────
 
-function HasilTable({ hasilList }: { hasilList: HasilPerhitungan[] }) {
+function HasilTable({
+  hasilList,
+  terpilihId,
+  onPilih,
+}: {
+  hasilList: HasilPerhitungan[]
+  terpilihId: string | null
+  onPilih: (h: HasilPerhitungan) => void
+}) {
   const [sortKey, setSortKey] = useState<'nama' | 'nkkip' | 'bjk' | 'usia'>('nkkip')
   const [asc, setAsc]         = useState(false)
 
@@ -457,11 +469,21 @@ function HasilTable({ hasilList }: { hasilList: HasilPerhitungan[] }) {
             <th className="text-right px-3 py-2 font-semibold whitespace-nowrap hidden sm:table-cell">Upah</th>
             <SortHeader k="nkkip" label="NKKIP" />
             <SortHeader k="bjk"   label="Biaya Jasa" />
+            <th className="px-2 py-2 w-8"></th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-50">
           {sorted.map((h, i) => (
-            <tr key={h.input.karyawan.id} className="hover:bg-gray-50">
+            <tr
+              key={h.input.karyawan.id}
+              className={`text-sm cursor-pointer transition-colors ${
+                terpilihId === h.input.karyawan.id
+                  ? 'bg-secondary/10 border-l-2 border-secondary'
+                  : 'hover:bg-gray-50'
+              }`}
+              onClick={() => onPilih(h)}
+              title="Klik untuk melihat detail langkah perhitungan"
+            >
               <td className="px-3 py-2 text-gray-400 text-xs">{i + 1}</td>
               <td className="px-3 py-2 font-medium text-gray-800">{h.input.karyawan.nama}</td>
               <td className="text-right px-3 py-2 tabular-nums text-gray-600">{h.usiaSekarang.toFixed(1)}</td>
@@ -475,12 +497,18 @@ function HasilTable({ hasilList }: { hasilList: HasilPerhitungan[] }) {
               <td className="text-right px-3 py-2 tabular-nums text-gray-700">
                 {formatRupiah(h.biayaJasaKini)}
               </td>
+              <td className="px-2 py-2 text-center text-gray-300">
+                {terpilihId === h.input.karyawan.id
+                  ? <span className="text-secondary text-xs font-bold">▼</span>
+                  : <span className="text-xs">›</span>
+                }
+              </td>
             </tr>
           ))}
         </tbody>
         <tfoot>
           <tr className="bg-gray-50 border-t border-gray-200 font-semibold">
-            <td colSpan={5} className="px-3 py-2 text-xs text-gray-500">
+            <td colSpan={6} className="px-3 py-2 text-xs text-gray-500">
               TOTAL ({hasilList.length} karyawan)
             </td>
             <td className="text-right px-3 py-2 tabular-nums text-secondary">
@@ -521,6 +549,8 @@ export default function BatchPage() {
   const [isLoading, setIsLoading]   = useState(false)
   const [errMsg, setErrMsg]         = useState<string | null>(null)
   const [skipList, setSkipList]     = useState<string[]>([])
+  const [karyawanTerpilih, setKaryawanTerpilih] = useState<HasilPerhitungan | null>(null)
+  const detailRef = useRef<HTMLDivElement>(null)
 
   function patchSettings(patch: Partial<GlobalSettings>) {
     setSettings((s) => ({ ...s, ...patch }))
@@ -597,6 +627,7 @@ export default function BatchPage() {
       const batch = hitungBatch(validInputs)
       setHasilList(batch.hasil)
       setHasilBatch(batch)
+      setKaryawanTerpilih(null)
     } catch (e) {
       setErrMsg(e instanceof Error ? e.message : String(e))
     } finally {
@@ -740,8 +771,61 @@ export default function BatchPage() {
             </div>
           </div>
 
-          <HasilTable hasilList={hasilList} />
+          {hasilBatch && hasilList.length > 0 && (
+            <p className="text-xs text-gray-400 flex items-center gap-1">
+              <span>💡</span>
+              Klik baris karyawan untuk melihat langkah perhitungan detail
+            </p>
+          )}
+
+          <HasilTable
+            hasilList={hasilList}
+            terpilihId={karyawanTerpilih?.input.karyawan.id ?? null}
+            onPilih={(h) => {
+              if (karyawanTerpilih?.input.karyawan.id === h.input.karyawan.id) {
+                setKaryawanTerpilih(null)
+              } else {
+                setKaryawanTerpilih(h)
+                setTimeout(() => {
+                  detailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                }, 100)
+              }
+            }}
+          />
           <JurnalPanel hasilBatch={hasilBatch} />
+
+          {/* Panel detail karyawan terpilih */}
+          {karyawanTerpilih && (
+            <div ref={detailRef} className="flex flex-col gap-4 pt-2">
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="h-1 w-4 bg-secondary rounded-full" />
+                  <h2 className="text-base font-semibold text-gray-900">
+                    Detail Perhitungan — {karyawanTerpilih.input.karyawan.nama}
+                  </h2>
+                </div>
+                <button
+                  onClick={() => setKaryawanTerpilih(null)}
+                  className="text-xs text-gray-400 hover:text-gray-600 px-2 py-1 rounded border border-gray-200 hover:border-gray-300 transition-colors"
+                >
+                  ✕ Tutup detail
+                </button>
+              </div>
+
+              <CalculationSteps hasil={karyawanTerpilih} />
+
+              {karyawanTerpilih.tabelProbabilitas.length > 0 && (
+                <ProbabilityTable
+                  tabel={karyawanTerpilih.tabelProbabilitas}
+                  usiaSekarang={karyawanTerpilih.usiaSekarang}
+                />
+              )}
+
+              <DetailsTable hasil={karyawanTerpilih} />
+              <FSNote hasil={karyawanTerpilih} />
+            </div>
+          )}
         </div>
       )}
     </div>

@@ -48,8 +48,6 @@ export function JurnalPanel({ hasil, hasilBatch, tanggalPenyusunan }: Props) {
     ?? new Date().toISOString().slice(0, 10)
 
   const totalKreditLiabilitas = totalBJK + totalBunga + (totalBJL > 0 ? totalBJL : 0) + (totalGL > 0 ? totalGL : 0)
-  const totalKreditOCI        = totalGL < 0 ? Math.abs(totalGL) : 0
-  const totalKreditBJL        = totalBJL < 0 ? Math.abs(totalBJL) : 0
 
   const barisJurnal: BarisJurnal[] = [
     {
