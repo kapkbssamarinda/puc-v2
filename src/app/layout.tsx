@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description:
     "Kalkulator imbalan pasca kerja sesuai SAK EP / PSAK 24 menggunakan metode Projected Unit Credit (PUC). Dirancang untuk junior auditor KAP — hitung NKKIP, Biaya Jasa Kini, dan draft CALK.",
   keywords: ["PSAK 24", "SAK EP", "imbalan pasca kerja", "PUC", "aktuaria", "kalkulator", "KAP", "auditor", "pesangon", "PP 35 2021"],
-  authors: [{ name: "PUC Kalkulator" }],
+  authors: [{ name: "Viany Ramadhany" }],
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",

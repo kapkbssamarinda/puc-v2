@@ -51,6 +51,11 @@ export default function Footer() {
             </Link>
           </nav>
         </div>
+
+        {/* Copyright */}
+        <div className="border-t border-primary-700 pt-4 mt-4 text-center text-xs text-primary-400">
+          &copy; {new Date().getFullYear()} Viany Ramadhany. Seluruh hak cipta dilindungi.
+        </div>
       </div>
     </footer>
   );
