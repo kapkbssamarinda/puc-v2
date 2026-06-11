@@ -11,7 +11,7 @@ import { Alert } from '@/components/ui/Alert'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs'
 import { formatRupiah, formatTahunBulan, formatTanggal } from '@/lib/format'
 import { hitung, hitungBatch } from '@/lib/engine'
-import { parseCSV, downloadCSVTemplate } from '@/lib/csv/parser'
+import { parseXLSX, downloadXLSXTemplate } from '@/lib/csv/parser'
 import { exportExcelBatch, exportExcelRingkas } from '@/lib/export/excel'
 import { exportPDFBatch } from '@/lib/export/pdf'
 import { JurnalPanel }       from '@/components/results/JurnalPanel'
@@ -324,11 +324,11 @@ function TabCSV({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" onClick={downloadCSVTemplate}>
+        <Button variant="outline" size="sm" onClick={downloadXLSXTemplate}>
           <Download className="h-4 w-4 mr-1" />
-          Download Template CSV
+          Download Template Excel
         </Button>
-        <span className="text-xs text-gray-400">Format: nama, tanggal_lahir, tanggal_masuk, upah_bulanan, jenis_kelamin</span>
+        <span className="text-xs text-gray-400">Format tanggal: DD/MM/YYYY (contoh: 15/03/1985)</span>
       </div>
 
       {/* Drop zone */}
@@ -342,13 +342,13 @@ function TabCSV({
       >
         <FileSpreadsheet className={`h-10 w-10 ${drag ? 'text-secondary' : 'text-gray-300'}`} />
         <div className="text-center">
-          <p className="text-sm font-medium text-gray-600">Drag &amp; drop file CSV di sini</p>
+          <p className="text-sm font-medium text-gray-600">Drag &amp; drop file Excel (.xlsx) di sini</p>
           <p className="text-xs text-gray-400 mt-1">atau klik untuk memilih file</p>
         </div>
         <input
           ref={fileRef}
           type="file"
-          accept=".csv,text/csv"
+          accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           className="hidden"
           onChange={(e) => {
             const file = e.target.files?.[0]
@@ -557,8 +557,8 @@ export default function BatchPage() {
   }
 
   async function handleCSVFile(file: File) {
-    const text = await file.text()
-    const result = parseCSV(text)
+    const buffer = await file.arrayBuffer()
+    const result = parseXLSX(buffer)
     setCsvData(result.data)
     setCsvErrors(result.errors)
   }
@@ -646,7 +646,7 @@ export default function BatchPage() {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Batch Multi-Karyawan</h1>
           <p className="text-sm text-gray-500 mt-0.5">
-            Hitung liabilitas PSAK 24 untuk seluruh karyawan sekaligus. Input manual atau import CSV.
+            Hitung liabilitas PSAK 24 untuk seluruh karyawan sekaligus. Input manual atau import Excel.
           </p>
         </div>
       </div>
@@ -658,7 +658,7 @@ export default function BatchPage() {
       <Tabs defaultValue="manual" value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
           <TabsTrigger value="manual">Input Manual</TabsTrigger>
-          <TabsTrigger value="csv">Import CSV</TabsTrigger>
+          <TabsTrigger value="csv">Import Excel</TabsTrigger>
         </TabsList>
 
         <TabsContent value="manual">
@@ -687,7 +687,7 @@ export default function BatchPage() {
           </span>
         )}
         {activeTab === 'csv' && csvData.length > 0 && (
-          <span className="text-xs text-gray-400">{csvData.length} karyawan dari CSV</span>
+          <span className="text-xs text-gray-400">{csvData.length} karyawan dari Excel</span>
         )}
       </div>
 
