@@ -1,6 +1,6 @@
 import type { NextAuthConfig } from "next-auth"
 
-const PUBLIC_ROUTES = ["/login"]
+const PUBLIC_ROUTES = ["/", "/login", "/panduan"]
 
 export const authConfig = {
   pages: {

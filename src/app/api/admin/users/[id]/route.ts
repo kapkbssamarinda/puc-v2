@@ -83,14 +83,8 @@ export async function PUT(
     }
   }
 
-  const publicUser = {
-    id: updated.id,
-    name: updated.name,
-    email: updated.email,
-    role: updated.role,
-    createdAt: updated.createdAt,
-    expiresAt: updated.expiresAt,
-  }
+  const publicUser = { ...updated } as Record<string, unknown>;
+  delete publicUser.hashedPassword;
   return NextResponse.json(publicUser)
 }
 

@@ -16,14 +16,11 @@ async function getAllUsers() {
   const results = await redis.mget<(RedisUser | null)[]>(...userKeys)
   return results
     .filter((u): u is RedisUser => u !== null)
-    .map((u) => ({
-      id: u.id,
-      name: u.name,
-      email: u.email,
-      role: u.role,
-      createdAt: u.createdAt,
-      expiresAt: u.expiresAt,
-    }))
+    .map((user) => {
+      const u = { ...user } as Record<string, unknown>;
+      delete u.hashedPassword;
+      return u as Omit<RedisUser, "hashedPassword">;
+    })
     .sort((a, b) => {
       // admin dulu, lalu urut nama
       if (a.role !== b.role) return a.role === "admin" ? -1 : 1

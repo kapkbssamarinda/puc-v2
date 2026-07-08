@@ -20,14 +20,11 @@ export async function GET() {
   }
 
   const users = await listAllUsers()
-  const publicUsers = users.map((u) => ({
-    id: u.id,
-    name: u.name,
-    email: u.email,
-    role: u.role,
-    createdAt: u.createdAt,
-    expiresAt: u.expiresAt,
-  }))
+  const publicUsers = users.map((user) => {
+    const u = { ...user } as Record<string, unknown>;
+    delete u.hashedPassword;
+    return u;
+  })
   return NextResponse.json(publicUsers)
 }
 
@@ -86,13 +83,7 @@ export async function POST(request: Request) {
     await redis.expire(`user:email:${email}`, ttl)
   }
 
-  const publicUser = {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    role: user.role,
-    createdAt: user.createdAt,
-    expiresAt: user.expiresAt,
-  }
+  const publicUser = { ...user } as Record<string, unknown>;
+  delete publicUser.hashedPassword;
   return NextResponse.json(publicUser, { status: 201 })
 }
