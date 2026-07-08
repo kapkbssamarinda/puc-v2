@@ -6,6 +6,7 @@ import { Calculator, Users, BarChart3, BookOpen, Menu, X, LogOut, Lock, LogIn, S
 import { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
+import Swal from "sweetalert2";
 
 const navItems = [
   { href: "/kalkulator", label: "Kalkulator", icon: Calculator, short: "Kalkulator" },
@@ -26,6 +27,24 @@ export default function Header() {
       setAlertOpen(true);
     }
   }
+
+  const handleLogout = async () => {
+    const result = await Swal.fire({
+      title: "Apakah anda ingin keluar?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#2563eb", // Tailwind blue-600 (Primary color match roughly)
+      cancelButtonColor: "#dc2626", // Tailwind red-600
+      confirmButtonText: "Ya, Keluar!",
+      cancelButtonText: "Batal",
+      reverseButtons: true
+    });
+    
+    if (result.isConfirmed) {
+      setMenuOpen(false);
+      signOut({ callbackUrl: "/login" });
+    }
+  };
 
   return (
     <header className="bg-primary text-white shadow-lg sticky top-0 z-50">
@@ -88,11 +107,7 @@ export default function Header() {
                   {session.user?.name ?? session.user?.email}
                 </span>
                 <button
-                  onClick={() => {
-                    if (window.confirm("Apakah anda ingin keluar ?")) {
-                      signOut({ callbackUrl: "/login" })
-                    }
-                  }}
+                  onClick={handleLogout}
                   className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium text-primary-200 hover:bg-primary-600 hover:text-white transition-colors"
                   title="Keluar"
                 >
@@ -164,12 +179,7 @@ export default function Header() {
                   </Link>
                 )}
                 <button
-                  onClick={() => { 
-                    if (window.confirm("Apakah anda ingin keluar ?")) {
-                      setMenuOpen(false); 
-                      signOut({ callbackUrl: "/login" }) 
-                    }
-                  }}
+                  onClick={handleLogout}
                   className="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm font-medium text-primary-200 hover:bg-primary-600 hover:text-white transition-colors w-full text-left"
                 >
                   <LogOut className="w-4 h-4" />
