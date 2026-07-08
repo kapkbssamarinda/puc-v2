@@ -10,7 +10,7 @@ async function listAllUsers(): Promise<RedisUser[]> {
   const userKeys = allKeys.filter((k) => !k.includes(":email:"))
   if (userKeys.length === 0) return []
   const results = await redis.mget<(RedisUser | null)[]>(...userKeys)
-  return results.filter((u): u is RedisUser => u !== null)
+  return results.filter((u): u is RedisUser => u !== null && typeof u === "object" && "name" in u)
 }
 
 export async function GET() {
