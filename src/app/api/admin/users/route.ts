@@ -20,7 +20,14 @@ export async function GET() {
   }
 
   const users = await listAllUsers()
-  const publicUsers = users.map(({ hashedPassword: _hp, ...u }) => u)
+  const publicUsers = users.map((u) => ({
+    id: u.id,
+    name: u.name,
+    email: u.email,
+    role: u.role,
+    createdAt: u.createdAt,
+    expiresAt: u.expiresAt,
+  }))
   return NextResponse.json(publicUsers)
 }
 
@@ -79,6 +86,13 @@ export async function POST(request: Request) {
     await redis.expire(`user:email:${email}`, ttl)
   }
 
-  const { hashedPassword: _hp, ...publicUser } = user
+  const publicUser = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    createdAt: user.createdAt,
+    expiresAt: user.expiresAt,
+  }
   return NextResponse.json(publicUser, { status: 201 })
 }
