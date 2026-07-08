@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      transitionTimingFunction: {
+        'expo-out': 'cubic-bezier(0.16, 1, 0.3, 1)',
+      },
       colors: {
         primary: {
           DEFAULT: "#1B2A4A",

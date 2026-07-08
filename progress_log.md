@@ -24,7 +24,12 @@
 - **Tindakan:** Melakukan filtrasi *strict* pada data yang dikembalikan Redis (`u !== null && typeof u === "object" && "name" in u`), memastikan hanya *object user* valid yang diproses.
 - **Hasil:** Aplikasi dapat mengatasi data "kotor" pada database tanpa menyebabkan kegagalan sistem. 
 
+### 5. Peningkatan UI/UX: Konfirmasi Logout (SweetAlert2)
+- **Kebutuhan:** Pengguna menginginkan adanya pop-up konfirmasi yang elegan saat menekan tombol "Keluar", serta langsung diarahkan ke halaman login setelahnya.
+- **Tindakan:** Menginstal _library_ `sweetalert2`, mengganti fungsi `window.confirm` bawaan *browser* dengan modal animasi interaktif (dilengkapi penyesuaian warna desain), dan mengubah target rute (callback URL) *logout* dari halaman utama (`/`) ke halaman login (`/login`).
+- **Hasil:** Proses *logout* menjadi lebih aman dari risiko klik tidak sengaja, antarmuka terlihat jauh lebih profesional, dan alur aplikasi menjadi lebih tepat sasaran.
+
 ### Status Terkini
-- Seluruh perbaikan telah di-*commit* (termasuk *commit* dari pihak pengguna: `"perbarui .gitignore..."` serta perbaikan akhir `"Fix server-side crash..."`).
-- Repositori GitHub utama (`main`) sudah mutakhir (*up-to-date*).
-- **Vercel Deployment:** Otomatis berhasil (*Auto-deployed* berdasarkan _push_ terakhir ke GitHub). Sistem saat ini sudah stabil.
+- Seluruh perbaikan dan penambahan fitur (termasuk SweetAlert2) telah berhasil diuji (*linted*).
+- Kode terbaru telah di-*commit* (`"Use sweetalert2 for logout confirmation"`) dan ter-*push* otomatis ke GitHub.
+- **Vercel Deployment:** Stabil dan selalu sinkron dengan status GitHub terakhir.
