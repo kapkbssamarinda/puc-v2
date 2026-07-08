@@ -88,7 +88,11 @@ export default function Header() {
                   {session.user?.name ?? session.user?.email}
                 </span>
                 <button
-                  onClick={() => signOut({ callbackUrl: "/" })}
+                  onClick={() => {
+                    if (window.confirm("Apakah anda ingin keluar ?")) {
+                      signOut({ callbackUrl: "/login" })
+                    }
+                  }}
                   className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium text-primary-200 hover:bg-primary-600 hover:text-white transition-colors"
                   title="Keluar"
                 >
@@ -160,7 +164,12 @@ export default function Header() {
                   </Link>
                 )}
                 <button
-                  onClick={() => { setMenuOpen(false); signOut({ callbackUrl: "/" }) }}
+                  onClick={() => { 
+                    if (window.confirm("Apakah anda ingin keluar ?")) {
+                      setMenuOpen(false); 
+                      signOut({ callbackUrl: "/login" }) 
+                    }
+                  }}
                   className="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm font-medium text-primary-200 hover:bg-primary-600 hover:text-white transition-colors w-full text-left"
                 >
                   <LogOut className="w-4 h-4" />
