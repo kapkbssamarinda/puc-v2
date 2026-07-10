@@ -10,7 +10,7 @@ async function listAllUsers(): Promise<RedisUser[]> {
   const userKeys = allKeys.filter((k) => !k.includes(":email:"))
   if (userKeys.length === 0) return []
   const results = await redis.mget<(RedisUser | null)[]>(...userKeys)
-  return results.filter((u): u is RedisUser => u !== null)
+  return results.filter((u): u is RedisUser => u !== null && typeof u === "object" && "name" in u)
 }
 
 export async function GET() {
@@ -20,7 +20,11 @@ export async function GET() {
   }
 
   const users = await listAllUsers()
-  const publicUsers = users.map(({ hashedPassword: _hp, ...u }) => u)
+  const publicUsers = users.map((user) => {
+    const u = { ...user } as Record<string, unknown>;
+    delete u.hashedPassword;
+    return u;
+  })
   return NextResponse.json(publicUsers)
 }
 
@@ -79,6 +83,7 @@ export async function POST(request: Request) {
     await redis.expire(`user:email:${email}`, ttl)
   }
 
-  const { hashedPassword: _hp, ...publicUser } = user
+  const publicUser = { ...user } as Record<string, unknown>;
+  delete publicUser.hashedPassword;
   return NextResponse.json(publicUser, { status: 201 })
 }
