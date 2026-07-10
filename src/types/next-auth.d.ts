@@ -23,5 +23,6 @@ declare module "next-auth/jwt" {
   interface JWT {
     role?: "auditor" | "admin"
     expiresAt?: string
+    loginAt?: number
   }
 }

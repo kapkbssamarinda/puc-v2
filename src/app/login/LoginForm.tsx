@@ -26,6 +26,7 @@ type LoginFormValues = z.infer<typeof loginSchema>
 
 const ERROR_MESSAGES: Record<string, string> = {
   CredentialsSignin: "Email atau password salah. Silakan coba lagi.",
+  idle: "Sesi Anda berakhir karena tidak ada aktivitas selama 30 menit. Silakan login kembali.",
   Default: "Terjadi kesalahan. Silakan coba lagi.",
 }
 

@@ -1,22 +1,9 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import { Redis } from "@upstash/redis"
 import bcrypt from "bcryptjs"
 import { z } from "zod"
 import { authConfig } from "./auth.config"
-
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-})
-
-interface RedisUser {
-  id: string
-  name: string
-  email: string
-  hashedPassword: string
-  role: "auditor" | "admin"
-}
+import { redis, type RedisUser } from "@/lib/redis"
 
 const credentialsSchema = z.object({
   email: z.string().email(),
@@ -51,6 +38,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           name: user.name,
           email: user.email,
           role: user.role,
+          expiresAt: user.expiresAt,
         }
       },
     }),
