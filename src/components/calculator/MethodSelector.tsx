@@ -126,7 +126,7 @@ export function MethodSelector({ value, onChange }: MethodSelectorProps) {
                     <span className={aktif ? 'text-green-500' : 'text-gray-300'}>
                       {aktif ? '✓' : '✗'}
                     </span>
-                    <span className={aktif ? 'text-gray-700' : 'text-gray-400'}>{label}</span>
+                    <span className={aktif ? 'text-gray-700' : 'text-gray-500'}>{label}</span>
                   </li>
                 ))}
               </ul>

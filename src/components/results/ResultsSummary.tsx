@@ -42,18 +42,18 @@ export function ResultsSummary({ hasil }: Props) {
     <div className="flex flex-col gap-4">
 
       {/* Scorecard utama */}
-      <Card className="border-l-4 border-secondary rounded-l-none shadow-sm">
+      <Card className="bg-secondary/5 border-secondary/25 shadow-sm">
         <CardContent className="pt-5 pb-4">
           <div className="flex items-start justify-between gap-3 mb-4">
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 mb-1.5">
-                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest">
+                <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest">
                   NKKIP (Liabilitas Imbalan Pasca Kerja)
                 </span>
                 <InfoTooltip text="Nilai yang harus diakui sebagai liabilitas di Laporan Posisi Keuangan (neraca). Merupakan Present Value of Defined Benefit Obligation (PVDBO) pada tanggal pengukuran." />
               </div>
               <p className="text-3xl font-bold text-gray-900 tabular-nums">{formatRupiah(nkkip)}</p>
-              <p className="text-xs text-gray-400 mt-1">{karyawan.nama}</p>
+              <p className="text-xs text-gray-500 mt-1">{karyawan.nama}</p>
             </div>
             <Badge variant="info" className="mt-1 shrink-0 whitespace-nowrap">
               {METODE_LABEL[metode]}
@@ -65,7 +65,7 @@ export function ResultsSummary({ hasil }: Props) {
           <div className="flex items-start justify-between gap-4">
             <div>
               <div className="flex items-center gap-1.5 mb-1">
-                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest">
+                <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest">
                   Biaya Jasa Kini
                 </span>
                 <InfoTooltip text="Beban yang diakui di Laporan Laba Rugi periode ini — kenaikan NKKIP akibat satu tahun tambahan masa kerja karyawan." />
@@ -75,7 +75,7 @@ export function ResultsSummary({ hasil }: Props) {
             {biayaBunga > 0 && (
               <div className="text-right">
                 <div className="flex items-center justify-end gap-1.5 mb-1">
-                  <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest">
+                  <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest">
                     Biaya Bunga
                   </span>
                   <InfoTooltip text="Interest Cost = tingkat diskonto × NKKIP awal periode. Kenaikan kewajiban karena berlalunya waktu." />
@@ -124,7 +124,7 @@ export function ResultsSummary({ hasil }: Props) {
               ['Tanggal', formatTanggal(tanggalPerhitungan)],
             ] as [string, string][]).map(([label, val]) => (
               <div key={label} className="flex justify-between gap-1">
-                <span className="text-gray-400">{label}</span>
+                <span className="text-gray-500">{label}</span>
                 <span className="font-medium text-gray-700 text-right">{val}</span>
               </div>
             )))}
@@ -157,7 +157,7 @@ export function ResultsSummary({ hasil }: Props) {
                   <div className="text-right shrink-0">
                     <span className="text-sm font-semibold text-gray-900">{formatRupiah(val)}</span>
                     {biayaJasaPerJenis[jenis as keyof typeof biayaJasaPerJenis] != null && (
-                      <p className="text-xs text-gray-400">BJK: {formatRupiah(biayaJasaPerJenis[jenis as keyof typeof biayaJasaPerJenis]!)}</p>
+                      <p className="text-xs text-gray-500">BJK: {formatRupiah(biayaJasaPerJenis[jenis as keyof typeof biayaJasaPerJenis]!)}</p>
                     )}
                   </div>
                 </div>

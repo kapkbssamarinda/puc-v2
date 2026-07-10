@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useMemo } from 'react'
 import { Users, Plus, Trash2, Download, FileSpreadsheet, FileText } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -69,14 +69,15 @@ function formatUpahInput(s: string): string {
 // ─── Komponen sel input baris tabel ───────────────────────────────────────────
 
 function CellInput({
-  value, onChange, type = 'text', placeholder,
-}: { value: string; onChange: (v: string) => void; type?: string; placeholder?: string }) {
+  value, onChange, type = 'text', placeholder, ariaLabel,
+}: { value: string; onChange: (v: string) => void; type?: string; placeholder?: string; ariaLabel?: string }) {
   return (
     <input
       type={type}
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
+      aria-label={ariaLabel}
       className="w-full h-8 px-2 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-secondary focus:border-secondary bg-white"
     />
   )
@@ -107,7 +108,7 @@ function SettingsPanel({
         <CardTitle className="text-sm">Pengaturan Global (berlaku untuk semua karyawan)</CardTitle>
       </CardHeader>
       <CardContent className="p-4">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-3">
           <Select
             label="Metode"
             value={s.metode}
@@ -250,30 +251,32 @@ function TabManual({
           <tbody className="divide-y divide-gray-50">
             {rows.map((r, i) => (
               <tr key={r.id} className="hover:bg-gray-50">
-                <td className="px-3 py-2 text-gray-400 text-xs">{i + 1}</td>
+                <td className="px-3 py-2 text-gray-500 text-xs">{i + 1}</td>
                 <td className="px-2 py-1.5">
-                  <CellInput value={r.nama} onChange={(v) => updateRow(r.id, { nama: v })} placeholder="Nama karyawan" />
+                  <CellInput value={r.nama} onChange={(v) => updateRow(r.id, { nama: v })} placeholder="Nama karyawan" ariaLabel={`Nama karyawan baris ${i + 1}`} />
                 </td>
                 <td className="px-2 py-1.5">
-                  <CellInput value={r.nik} onChange={(v) => updateRow(r.id, { nik: v })} placeholder="NIK" />
+                  <CellInput value={r.nik} onChange={(v) => updateRow(r.id, { nik: v })} placeholder="NIK" ariaLabel={`NIK baris ${i + 1}`} />
                 </td>
                 <td className="px-2 py-1.5">
-                  <CellInput value={r.tanggalLahir} onChange={(v) => updateRow(r.id, { tanggalLahir: v })} type="date" />
+                  <CellInput value={r.tanggalLahir} onChange={(v) => updateRow(r.id, { tanggalLahir: v })} type="date" ariaLabel={`Tanggal lahir baris ${i + 1}`} />
                 </td>
                 <td className="px-2 py-1.5">
-                  <CellInput value={r.tanggalMasuk} onChange={(v) => updateRow(r.id, { tanggalMasuk: v })} type="date" />
+                  <CellInput value={r.tanggalMasuk} onChange={(v) => updateRow(r.id, { tanggalMasuk: v })} type="date" ariaLabel={`Tanggal masuk baris ${i + 1}`} />
                 </td>
                 <td className="px-2 py-1.5">
                   <CellInput
                     value={formatUpahInput(r.upahBulanan)}
                     onChange={(v) => updateRow(r.id, { upahBulanan: v.replace(/[^0-9]/g, '') })}
                     placeholder="10.000.000"
+                    ariaLabel={`Upah bulanan baris ${i + 1}`}
                   />
                 </td>
                 <td className="px-2 py-1.5 text-center">
                   <select
                     value={r.jenisKelamin}
                     onChange={(e) => updateRow(r.id, { jenisKelamin: e.target.value as 'L' | 'P' })}
+                    aria-label={`Jenis kelamin baris ${i + 1}`}
                     className="h-8 px-1 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-secondary"
                   >
                     <option value="L">L</option>
@@ -283,8 +286,9 @@ function TabManual({
                 <td className="px-2 py-1.5">
                   <button
                     onClick={() => removeRow(r.id)}
-                    className="p-1 text-gray-300 hover:text-red-400 transition-colors"
+                    aria-label={`Hapus baris ${i + 1}`}
                     title="Hapus baris"
+                    className="relative p-1 text-gray-500 hover:text-red-500 transition-colors before:absolute before:-inset-3 before:content-['']"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
@@ -328,22 +332,31 @@ function TabCSV({
           <Download className="h-4 w-4 mr-1" />
           Download Template Excel
         </Button>
-        <span className="text-xs text-gray-400">Format tanggal: DD/MM/YYYY (contoh: 15/03/1985)</span>
+        <span className="text-xs text-gray-500">Format tanggal: DD/MM/YYYY (contoh: 15/03/1985)</span>
       </div>
 
       {/* Drop zone */}
       <div
+        role="button"
+        tabIndex={0}
+        aria-label="Pilih atau letakkan file Excel untuk diimpor"
         onDragOver={(e) => { e.preventDefault(); setDrag(true) }}
         onDragLeave={() => setDrag(false)}
         onDrop={handleDrop}
         onClick={() => fileRef.current?.click()}
-        className={`flex flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed cursor-pointer transition-colors p-10
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            fileRef.current?.click()
+          }
+        }}
+        className={`flex flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed cursor-pointer transition-colors p-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2
           ${drag ? 'border-secondary bg-blue-50' : 'border-gray-200 hover:border-gray-300 bg-gray-50'}`}
       >
         <FileSpreadsheet className={`h-10 w-10 ${drag ? 'text-secondary' : 'text-gray-300'}`} />
         <div className="text-center">
           <p className="text-sm font-medium text-gray-600">Drag &amp; drop file Excel (.xlsx) di sini</p>
-          <p className="text-xs text-gray-400 mt-1">atau klik untuk memilih file</p>
+          <p className="text-xs text-gray-500 mt-1">atau klik untuk memilih file</p>
         </div>
         <input
           ref={fileRef}
@@ -394,7 +407,7 @@ function TabCSV({
               <tbody className="divide-y divide-gray-50">
                 {csvData.map((k, i) => (
                   <tr key={k.id} className="hover:bg-gray-50">
-                    <td className="px-3 py-1.5 text-gray-400">{i + 1}</td>
+                    <td className="px-3 py-1.5 text-gray-500">{i + 1}</td>
                     <td className="px-3 py-1.5 font-medium text-gray-800">{k.nama}</td>
                     <td className="px-3 py-1.5 text-gray-600">{k.tanggalLahir}</td>
                     <td className="px-3 py-1.5 text-gray-600">{k.tanggalMasuk}</td>
@@ -430,7 +443,7 @@ function HasilTable({
     else { setSortKey(k); setAsc(false) }
   }
 
-  const sorted = [...hasilList].sort((a, b) => {
+  const sorted = useMemo(() => [...hasilList].sort((a, b) => {
     let va: number | string = 0
     let vb: number | string = 0
     if (sortKey === 'nama')  { va = a.input.karyawan.nama;  vb = b.input.karyawan.nama }
@@ -439,7 +452,7 @@ function HasilTable({
     if (sortKey === 'usia')  { va = a.usiaSekarang;         vb = b.usiaSekarang }
     const cmp = typeof va === 'string' ? va.localeCompare(String(vb)) : (va as number) - (vb as number)
     return asc ? cmp : -cmp
-  })
+  }), [hasilList, sortKey, asc])
 
   function SortHeader({ k, label }: { k: typeof sortKey; label: string }) {
     return (
@@ -476,15 +489,24 @@ function HasilTable({
           {sorted.map((h, i) => (
             <tr
               key={h.input.karyawan.id}
-              className={`text-sm cursor-pointer transition-colors ${
+              role="button"
+              tabIndex={0}
+              aria-pressed={terpilihId === h.input.karyawan.id}
+              className={`text-sm cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-secondary ${
                 terpilihId === h.input.karyawan.id
                   ? 'bg-secondary/10 border-l-2 border-secondary'
                   : 'hover:bg-gray-50'
               }`}
               onClick={() => onPilih(h)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  onPilih(h)
+                }
+              }}
               title="Klik untuk melihat detail langkah perhitungan"
             >
-              <td className="px-3 py-2 text-gray-400 text-xs">{i + 1}</td>
+              <td className="px-3 py-2 text-gray-500 text-xs">{i + 1}</td>
               <td className="px-3 py-2 font-medium text-gray-800">{h.input.karyawan.nama}</td>
               <td className="text-right px-3 py-2 tabular-nums text-gray-600">{h.usiaSekarang.toFixed(1)}</td>
               <td className="text-right px-3 py-2 tabular-nums text-gray-600">{formatTahunBulan(h.masaKerjaLalu)}</td>
@@ -592,6 +614,9 @@ export default function BatchPage() {
     setErrMsg(null)
     setSkipList([])
 
+    // Beri kesempatan browser melukis status loading sebelum loop perhitungan dimulai.
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))
+
     const karyawanList: DataKaryawan[] = activeTab === 'manual'
       ? rows.map(toDataKaryawan).filter((k) => k.nama && k.tanggalLahir && k.tanggalMasuk && k.upahBulanan > 0)
       : csvData
@@ -607,12 +632,17 @@ export default function BatchPage() {
       const skipped: string[] = []
       const validInputs: InputPerhitungan[] = []
 
-      for (const inp of inputs) {
+      for (let idx = 0; idx < inputs.length; idx++) {
+        const inp = inputs[idx]
         try {
           hitung(inp)
           validInputs.push(inp)
         } catch (e) {
           skipped.push(`${inp.karyawan.nama}: ${e instanceof Error ? e.message : String(e)}`)
+        }
+        // Serahkan kembali kontrol ke main thread tiap 25 karyawan agar UI (spinner, input lain) tetap responsif.
+        if (idx % 25 === 24) {
+          await new Promise((resolve) => setTimeout(resolve, 0))
         }
       }
 
@@ -682,12 +712,12 @@ export default function BatchPage() {
           {isLoading ? 'Menghitung…' : 'Hitung Semua Karyawan'}
         </Button>
         {activeTab === 'manual' && (
-          <span className="text-xs text-gray-400">
+          <span className="text-xs text-gray-500">
             {rows.filter((r) => r.nama && r.tanggalLahir && r.tanggalMasuk).length} baris siap
           </span>
         )}
         {activeTab === 'csv' && csvData.length > 0 && (
-          <span className="text-xs text-gray-400">{csvData.length} karyawan dari Excel</span>
+          <span className="text-xs text-gray-500">{csvData.length} karyawan dari Excel</span>
         )}
       </div>
 
@@ -725,9 +755,9 @@ export default function BatchPage() {
             ].map(({ label, val, sub }) => (
               <Card key={label} className="shadow-sm">
                 <CardContent className="pt-4 pb-3">
-                  <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest">{label}</p>
+                  <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest">{label}</p>
                   <p className="text-xl font-bold text-gray-900 tabular-nums mt-0.5">{val}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">{sub}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{sub}</p>
                 </CardContent>
               </Card>
             ))}
@@ -772,7 +802,7 @@ export default function BatchPage() {
           </div>
 
           {hasilBatch && hasilList.length > 0 && (
-            <p className="text-xs text-gray-400 flex items-center gap-1">
+            <p className="text-xs text-gray-500 flex items-center gap-1">
               <span>💡</span>
               Klik baris karyawan untuk melihat langkah perhitungan detail
             </p>
@@ -807,7 +837,7 @@ export default function BatchPage() {
                 </div>
                 <button
                   onClick={() => setKaryawanTerpilih(null)}
-                  className="text-xs text-gray-400 hover:text-gray-600 px-2 py-1 rounded border border-gray-200 hover:border-gray-300 transition-colors"
+                  className="text-xs text-gray-500 hover:text-gray-600 px-2 py-1 rounded border border-gray-200 hover:border-gray-300 transition-colors"
                 >
                   ✕ Tutup detail
                 </button>

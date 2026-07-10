@@ -239,7 +239,7 @@ export function FSNote({ hasil }: Props) {
         <pre className="whitespace-pre-wrap font-mono text-[11px] text-gray-700 bg-gray-50 rounded-lg p-4 border border-gray-100 max-h-96 overflow-y-auto leading-relaxed">
           {teks}
         </pre>
-        <p className="mt-2 text-[10px] text-gray-400 italic">
+        <p className="mt-2 text-[10px] text-gray-500 italic">
           * Draft ini bukan opini aktuaria. Gunakan sebagai titik awal dokumentasi kertas kerja audit.
         </p>
       </CardContent>

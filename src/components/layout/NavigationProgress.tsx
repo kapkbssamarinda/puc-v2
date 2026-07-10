@@ -89,10 +89,9 @@ export function NavigationProgressProvider({
 
       {/* Overlay loading — z-[9999] agar di atas Header (z-50) */}
       <div
-        className={`fixed inset-0 z-[9999] flex items-center justify-center transition-opacity duration-200 ${
+        className={`fixed inset-0 z-[9999] flex items-center justify-center transition-opacity duration-200 bg-primary-700/85 ${
           isLoading ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
-        style={{ backgroundColor: "rgba(27, 42, 74, 0.85)" }}
         aria-hidden={!isLoading}
       >
         <div className="backdrop-blur-sm absolute inset-0" />

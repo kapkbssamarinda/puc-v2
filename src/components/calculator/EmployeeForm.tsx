@@ -127,10 +127,13 @@ export function EmployeeForm({ defaultValues, onChange }: EmployeeFormProps) {
   const values = watch()
 
   useEffect(() => {
-    employeeSchema.safeParseAsync(values).then((r) => {
-      onChange?.(values, r.success)
+    const subscription = watch((value) => {
+      employeeSchema.safeParseAsync(value).then((r) => {
+        onChange?.(value as EmployeeFormValues, r.success)
+      })
     })
-  }, [JSON.stringify(values)]) // eslint-disable-line react-hooks/exhaustive-deps
+    return () => subscription.unsubscribe()
+  }, [watch, onChange])
 
   return (
     <div className="flex flex-col gap-4">

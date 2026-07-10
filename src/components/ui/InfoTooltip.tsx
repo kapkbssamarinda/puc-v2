@@ -15,13 +15,14 @@ function InfoTooltip({ text, side = 'top', className }: InfoTooltipProps) {
     <Tooltip content={text} side={side}>
       <button
         type="button"
-        tabIndex={-1}
         aria-label="Informasi lebih lanjut"
         className={cn(
-          'inline-flex items-center justify-center',
+          'relative inline-flex items-center justify-center',
           'h-4 w-4 rounded-full text-[10px] font-bold',
           'bg-gray-200 text-gray-500 hover:bg-secondary hover:text-white',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-1',
           'transition-colors cursor-help',
+          "before:absolute before:-inset-3.5 before:content-['']",
           className,
         )}
       >

@@ -26,6 +26,7 @@ export function DetailsTable({ hasil }: Props) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
         className="flex items-center gap-2 text-sm font-medium text-secondary hover:text-blue-700 transition-colors"
       >
         <span className={cn('text-xs transition-transform', open && 'rotate-90')}>▶</span>
@@ -37,8 +38,14 @@ export function DetailsTable({ hasil }: Props) {
           <table className="min-w-full text-xs divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                {['Usia', 'Jenis', 'MK', 'Proj. Upah', 'PSG', 'UPMK', 'Imbalan', 'Peluang', 'Faktor D', 'Nilai Kini', 'Proporsi', 'NKKIP', 'BJK'].map(h => (
-                  <th key={h} className="px-2 py-2 text-left font-semibold text-gray-600 whitespace-nowrap">
+                {['Usia', 'Jenis', 'MK', 'Proj. Upah', 'PSG', 'UPMK', 'Imbalan', 'Peluang', 'Faktor D', 'Nilai Kini', 'Proporsi', 'NKKIP', 'BJK'].map((h, i) => (
+                  <th
+                    key={h}
+                    className={cn(
+                      'px-2 py-2 text-left font-semibold text-gray-600 whitespace-nowrap',
+                      i === 0 && 'sticky left-0 z-10 bg-gray-50 border-r border-gray-200',
+                    )}
+                  >
                     {h}
                   </th>
                 ))}
@@ -50,7 +57,10 @@ export function DetailsTable({ hasil }: Props) {
                   'hover:bg-gray-50',
                   row.jenisKeluar === 'PENSIUN' && 'bg-blue-50 font-medium',
                 )}>
-                  <td className="px-2 py-1.5 whitespace-nowrap">{row.usia}</td>
+                  <td className={cn(
+                    'px-2 py-1.5 whitespace-nowrap sticky left-0 border-r border-gray-200',
+                    row.jenisKeluar === 'PENSIUN' ? 'bg-blue-50' : 'bg-white',
+                  )}>{row.usia}</td>
                   <td className="px-2 py-1.5 whitespace-nowrap">
                     <span className={cn(
                       'inline-flex rounded px-1 py-0.5',

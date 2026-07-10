@@ -1,6 +1,6 @@
 "use client"
 
-import { useForm, Controller } from 'react-hook-form'
+import { useForm, useWatch, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useEffect } from 'react'
@@ -50,11 +50,12 @@ export function AssumptionsForm({ metode, defaultValues, onChange }: Assumptions
     mode: 'onChange',
   })
 
-  const values = watch()
-
   useEffect(() => {
-    onChange?.(values)
-  }, [JSON.stringify(values)]) // eslint-disable-line react-hooks/exhaustive-deps
+    const subscription = watch((value) => onChange?.(value as AssumptionsFormValues))
+    return () => subscription.unsubscribe()
+  }, [watch, onChange])
+
+  const tingkatDiskonto = useWatch({ control, name: 'tingkatDiskonto' })
 
   const showEconomi  = metode === 'PUC_ECONOMIC' || metode === 'PUC_FULL'
   const showDemografi = metode === 'PUC_FULL'
@@ -231,7 +232,7 @@ export function AssumptionsForm({ metode, defaultValues, onChange }: Assumptions
                       className="rounded text-secondary focus:ring-secondary"
                     />
                     <span className="text-sm text-gray-700">{label}</span>
-                    {isRequired && <span className="text-xs text-gray-400">(selalu aktif)</span>}
+                    {isRequired && <span className="text-xs text-gray-500">(selalu aktif)</span>}
                   </label>
                 )
               }}
@@ -289,8 +290,8 @@ export function AssumptionsForm({ metode, defaultValues, onChange }: Assumptions
                     }}
                   />
                   {field.value > 0 && (
-                    <p className="text-xs text-gray-400">
-                      Biaya Bunga akan dihitung: {(values.tingkatDiskonto / 100 * field.value).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 })}
+                    <p className="text-xs text-gray-500">
+                      Biaya Bunga akan dihitung: {(tingkatDiskonto / 100 * field.value).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 })}
                     </p>
                   )}
                 </div>

@@ -1,5 +1,6 @@
 "use client"
 
+import { Fragment } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Separator } from '@/components/ui/Separator'
 import { InfoTooltip } from '@/components/ui/InfoTooltip'
@@ -92,7 +93,7 @@ export function RekonsiliasiPanel({ rekonsiliasi }: Props) {
           <table className="w-full text-sm">
             <tbody>
               {baris.map((b, i) => (
-                <>
+                <Fragment key={i}>
                   {b.pemisah && (
                     <tr key={`sep-${i}`}>
                       <td colSpan={2} className="px-3 py-0">
@@ -116,13 +117,13 @@ export function RekonsiliasiPanel({ rekonsiliasi }: Props) {
                       {b.displayNilai ?? formatRupiah(b.nilai)}
                     </td>
                   </tr>
-                </>
+                </Fragment>
               ))}
             </tbody>
           </table>
         </div>
 
-        <p className="mt-2 text-[10px] text-gray-400">
+        <p className="mt-2 text-[10px] text-gray-500">
           * NKKIP Akhir dihitung sebagai: NKKIP Awal + BJK + Bunga + PSC + GL − Pembayaran.
           Selisih dengan nilai aktuaris mencerminkan perbedaan asumsi atau pembulatan.
         </p>

@@ -51,7 +51,7 @@ const metodePerhitungan = [
     deskripsi:
       "Pesangon yang harus dibayar jika seluruh karyawan diberhentikan hari ini. Dasar perbandingan, bukan metode PSAK 24.",
     psak: false,
-    borderColor: "border-l-gray-400",
+    dot: "bg-gray-400",
     tag: "Baseline",
   },
   {
@@ -60,7 +60,7 @@ const metodePerhitungan = [
     deskripsi:
       "Metode Projected Unit Credit menggunakan gaji saat ini tanpa proyeksi inflasi atau diskonto. Sesuai Contoh 3 DSAK IAI 2022.",
     psak: true,
-    borderColor: "border-l-blue-400",
+    dot: "bg-blue-400",
     tag: "Contoh 3 DSAK IAI",
   },
   {
@@ -69,7 +69,7 @@ const metodePerhitungan = [
     deskripsi:
       "PUC dengan proyeksi kenaikan gaji dan diskonto obligasi pemerintah. Sesuai Contoh 4 DSAK IAI 2022.",
     psak: true,
-    borderColor: "border-l-blue-600",
+    dot: "bg-blue-600",
     tag: "Contoh 4 DSAK IAI",
   },
   {
@@ -78,7 +78,7 @@ const metodePerhitungan = [
     deskripsi:
       "PUC lengkap dengan asumsi demografi (mortalitas, turnover, disabilitas). Standar laporan aktuaris untuk audit PSAK 24.",
     psak: true,
-    borderColor: "border-l-primary",
+    dot: "bg-primary",
     tag: "Standar Audit",
   },
 ];
@@ -184,10 +184,13 @@ export default function HomePage() {
           {metodePerhitungan.map((m) => (
             <div
               key={m.kode}
-              className={`bg-white rounded-lg border border-gray-100 border-l-4 ${m.borderColor} p-5 shadow-sm`}
+              className="bg-white rounded-lg border border-gray-100 p-5 shadow-sm"
             >
               <div className="flex items-start justify-between gap-3 mb-2">
-                <h3 className="font-semibold text-gray-900 text-sm">{m.nama}</h3>
+                <h3 className="font-semibold text-gray-900 text-sm flex items-center gap-2">
+                  <span className={`inline-block h-2 w-2 rounded-full shrink-0 ${m.dot}`} />
+                  {m.nama}
+                </h3>
                 <div className="flex gap-2 flex-shrink-0">
                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full whitespace-nowrap">
                     {m.tag}

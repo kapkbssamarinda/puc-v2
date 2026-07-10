@@ -189,7 +189,7 @@ export default function KalkulatorPage() {
 
       <Separator />
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(300px,360px)] gap-6 items-start">
 
         {/* Form kiri */}
         <div className="space-y-5">
@@ -208,6 +208,7 @@ export default function KalkulatorPage() {
                 <button
                   type="button"
                   onClick={() => setPscOpen((v) => !v)}
+                  aria-expanded={pscOpen}
                   className="w-full flex items-center justify-between px-4 py-3 text-left bg-amber-50 hover:bg-amber-100 transition-colors"
                 >
                   <div className="flex items-center gap-2">
@@ -310,6 +311,7 @@ export default function KalkulatorPage() {
                 <button
                   type="button"
                   onClick={() => setRkonOpen((v) => !v)}
+                  aria-expanded={rkonOpen}
                   className="w-full flex items-center justify-between px-4 py-3 text-left bg-blue-50 hover:bg-blue-100 transition-colors"
                 >
                   <div className="flex items-center gap-2">
@@ -415,7 +417,7 @@ export default function KalkulatorPage() {
           ) : (
             <div className="rounded-lg border-2 border-dashed border-gray-200 p-8 text-center">
               <p className="text-4xl mb-3 opacity-30">📊</p>
-              <p className="text-sm text-gray-400">Hasil akan muncul di sini setelah klik &ldquo;Hitung&rdquo;</p>
+              <p className="text-sm text-gray-500">Hasil akan muncul di sini setelah klik &ldquo;Hitung&rdquo;</p>
             </div>
           )}
         </div>

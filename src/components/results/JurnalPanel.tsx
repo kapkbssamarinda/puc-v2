@@ -139,23 +139,26 @@ export function JurnalPanel({ hasil, hasilBatch, tanggalPenyusunan }: Props) {
 
         {/* Ringkasan DBO */}
         <div>
-          <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-2">
+          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest mb-2">
             Ringkasan DBO
           </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <div className="bg-secondary/5 border border-secondary/25 rounded-lg px-3 py-2.5 mb-2">
+            <p className="text-[10px] text-secondary font-medium mb-0.5">Total DBO Tahun Berjalan</p>
+            <p className="text-xl font-bold text-gray-900 tabular-nums">{formatRupiah(totalDBO)}</p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {[
               { label: 'Jumlah Karyawan Terisi', nilai: String(jumlahKaryawan), satuan: 'karyawan' },
-              { label: 'Total DBO Tahun Berjalan', nilai: formatRupiah(totalDBO), satuan: '' },
               { label: 'Rata-rata DBO per Karyawan', nilai: formatRupiah(dboRataRata), satuan: '' },
               { label: 'DBO Tertinggi', nilai: formatRupiah(dboTertinggi), satuan: '' },
               { label: 'DBO Terendah', nilai: formatRupiah(dboTerendah), satuan: '' },
               { label: 'Tanggal Penyusunan', nilai: formatTanggal(tglPenyusunan), satuan: '' },
             ].map(({ label, nilai, satuan }) => (
               <div key={label} className="bg-gray-50 rounded-lg px-3 py-2 border border-gray-100">
-                <p className="text-[10px] text-gray-400 font-medium mb-0.5">{label}</p>
+                <p className="text-[10px] text-gray-500 font-medium mb-0.5">{label}</p>
                 <p className="text-sm font-semibold text-gray-900 tabular-nums">
                   {nilai}
-                  {satuan && <span className="text-xs font-normal text-gray-400 ml-1">{satuan}</span>}
+                  {satuan && <span className="text-xs font-normal text-gray-500 ml-1">{satuan}</span>}
                 </p>
               </div>
             ))}
@@ -166,7 +169,7 @@ export function JurnalPanel({ hasil, hasilBatch, tanggalPenyusunan }: Props) {
 
         {/* Komponen Jurnal */}
         <div>
-          <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-2">
+          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest mb-2">
             Komponen Jurnal
           </p>
           <div className="grid grid-cols-2 gap-2 mb-3">
@@ -190,7 +193,7 @@ export function JurnalPanel({ hasil, hasilBatch, tanggalPenyusunan }: Props) {
         {/* Tabel Jurnal Debit/Kredit */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest">
+            <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest">
               Jurnal Akuntansi
             </p>
             {seimbang
@@ -229,7 +232,7 @@ export function JurnalPanel({ hasil, hasilBatch, tanggalPenyusunan }: Props) {
                         {b.kredit > 0 ? formatRupiah(b.kredit) : <span className="text-gray-300">—</span>}
                       </td>
                       <td className="px-3 py-2 text-gray-500 hidden sm:table-cell">{b.rumusSumber}</td>
-                      <td className="px-3 py-2 text-gray-400 hidden md:table-cell">{b.catatan}</td>
+                      <td className="px-3 py-2 text-gray-500 hidden md:table-cell">{b.catatan}</td>
                     </tr>
                   )
                 })}
@@ -239,14 +242,14 @@ export function JurnalPanel({ hasil, hasilBatch, tanggalPenyusunan }: Props) {
                   <td className="px-3 py-2 text-gray-700">Total</td>
                   <td className="px-3 py-2 text-right tabular-nums text-gray-900">{formatRupiah(totalDebit)}</td>
                   <td className="px-3 py-2 text-right tabular-nums text-gray-900">{formatRupiah(totalKredit)}</td>
-                  <td colSpan={2} className="px-3 py-2 text-xs text-gray-400 hidden sm:table-cell">
+                  <td colSpan={2} className="px-3 py-2 text-xs text-gray-500 hidden sm:table-cell">
                     Debit = Kredit jika jurnal seimbang
                   </td>
                 </tr>
               </tfoot>
             </table>
           </div>
-          <p className="mt-1.5 text-[10px] text-gray-400 italic">
+          <p className="mt-1.5 text-[10px] text-gray-500 italic">
             * Jurnal ini bersifat estimasi untuk keperluan review audit.
             Nilai definitif mengacu laporan aktuaris terdaftar (PAI).
             Remeasurement diakui di OCI, tidak melalui Laporan Laba Rugi.

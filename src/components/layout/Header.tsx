@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Calculator, Users, BarChart3, BookOpen, Menu, X, LogOut, Lock, LogIn, ShieldCheck } from "lucide-react";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
+import { useFocusTrap } from "@/lib/useFocusTrap";
 
 const navItems = [
   { href: "/kalkulator", label: "Kalkulator", icon: Calculator, short: "Kalkulator" },
@@ -171,48 +172,57 @@ export default function Header() {
           </nav>
         </div>
       )}
-      {/* Modal: akses ditolak untuk user yang belum login */}
-      {alertOpen && (
-        <div
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4"
-          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-          onClick={() => setAlertOpen(false)}
-        >
-          <div
-            className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 flex flex-col items-center gap-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Ikon kunci */}
-            <div className="w-14 h-14 bg-amber-50 rounded-full flex items-center justify-center">
-              <Lock className="w-7 h-7 text-accent" />
-            </div>
-
-            <div className="text-center">
-              <h2 className="text-base font-semibold text-gray-900">Login Diperlukan</h2>
-              <p className="text-sm text-gray-500 mt-1">
-                Silakan login terlebih dahulu untuk mengakses fitur ini.
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-2 w-full mt-1">
-              <Link
-                href="/login"
-                onClick={() => setAlertOpen(false)}
-                className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary-600 transition-colors"
-              >
-                <LogIn className="w-4 h-4" />
-                Login Sekarang
-              </Link>
-              <button
-                onClick={() => setAlertOpen(false)}
-                className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
-              >
-                Tutup
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {alertOpen && <LoginRequiredDialog onClose={() => setAlertOpen(false)} />}
     </header>
+  );
+}
+
+function LoginRequiredDialog({ onClose }: { onClose: () => void }) {
+  const titleId = useId();
+  const trapRef = useFocusTrap(onClose);
+
+  return (
+    <div
+      className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-primary-900/45"
+      onClick={onClose}
+    >
+      <div
+        ref={trapRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 flex flex-col items-center gap-4 outline-none"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="w-14 h-14 bg-amber-50 rounded-full flex items-center justify-center">
+          <Lock className="w-7 h-7 text-accent" />
+        </div>
+
+        <div className="text-center">
+          <h2 id={titleId} className="text-base font-semibold text-gray-900">Login Diperlukan</h2>
+          <p className="text-sm text-gray-500 mt-1">
+            Silakan login terlebih dahulu untuk mengakses fitur ini.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-2 w-full mt-1">
+          <Link
+            href="/login"
+            onClick={onClose}
+            className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary-600 transition-colors"
+          >
+            <LogIn className="w-4 h-4" />
+            Login Sekarang
+          </Link>
+          <button
+            onClick={onClose}
+            className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+          >
+            Tutup
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

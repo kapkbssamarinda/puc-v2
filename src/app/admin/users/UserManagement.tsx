@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useId, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Select } from "@/components/ui/Select"
 import { Badge } from "@/components/ui/Badge"
+import { useFocusTrap } from "@/lib/useFocusTrap"
 
 export interface UserRecord {
   id: string
@@ -351,21 +352,29 @@ function Modal({
   onClose: () => void
   children: React.ReactNode
 }) {
+  const titleId = useId()
+  const trapRef = useFocusTrap(onClose)
+
   return (
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center p-4"
-      style={{ backgroundColor: "rgba(0,0,0,0.45)" }}
+      className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-primary-900/45"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-md"
+        ref={trapRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-md outline-none"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-          <h2 className="font-semibold text-gray-900">{title}</h2>
+          <h2 id={titleId} className="font-semibold text-gray-900">{title}</h2>
           <button
             onClick={onClose}
-            className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+            aria-label="Tutup"
+            className="relative p-1 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 transition-colors before:absolute before:-inset-3 before:content-['']"
           >
             <X className="w-4 h-4" />
           </button>
@@ -400,7 +409,14 @@ function RoleBadge({ role }: { role: "auditor" | "admin" }) {
 }
 
 function ExpiryCell({ expiresAt }: { expiresAt?: string }) {
-  if (!expiresAt) return <span className="text-gray-400">—</span>
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
+  if (!expiresAt) return <span className="text-gray-500">—</span>
+
+  // Hitung status kadaluarsa hanya setelah mount di client — Date.now() saat SSR
+  // dan saat hydration bisa berbeda beberapa detik dan memicu mismatch.
+  if (!mounted) return <span className="text-gray-500 text-xs">{formatTanggalExpiry(expiresAt)}</span>
 
   const isExpired = new Date(expiresAt) < new Date()
   if (isExpired) {
@@ -418,7 +434,7 @@ function ExpiryCell({ expiresAt }: { expiresAt?: string }) {
         <Clock className="w-3 h-3" />
         {formatSisaWaktu(expiresAt)}
       </span>
-      <span className="text-gray-400 text-xs">{formatTanggalExpiry(expiresAt)}</span>
+      <span className="text-gray-500 text-xs">{formatTanggalExpiry(expiresAt)}</span>
     </div>
   )
 }
@@ -503,7 +519,7 @@ export default function UserManagement({
             <tbody className="divide-y divide-gray-100">
               {users.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="text-center py-10 text-gray-400">
+                  <td colSpan={6} className="text-center py-10 text-gray-500">
                     Belum ada user terdaftar.
                   </td>
                 </tr>
@@ -513,7 +529,7 @@ export default function UserManagement({
                   <td className="px-5 py-3.5 font-medium text-gray-900">
                     {user.name}
                     {user.id === currentUserId && (
-                      <span className="ml-2 text-xs text-gray-400">(Anda)</span>
+                      <span className="ml-2 text-xs text-gray-500">(Anda)</span>
                     )}
                   </td>
                   <td className="px-5 py-3.5 text-gray-600">{user.email}</td>

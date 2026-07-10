@@ -292,7 +292,7 @@ export default function PanduanPage() {
                       </div>
                     </div>
                     <div className="flex items-start gap-2">
-                      <ChevronRight className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                      <ChevronRight className="w-4 h-4 text-gray-500 mt-0.5 shrink-0" />
                       <div>
                         <span className="font-semibold text-gray-600">Tidak (PSAK 24)</span> →
                         <span className="ml-1 text-amber-700">Disarankan aktuaris independen. Kalkulator bisa digunakan sebagai cross-check.</span>
@@ -313,7 +313,7 @@ export default function PanduanPage() {
                       </div>
                     </div>
                     <div className="flex items-start gap-2">
-                      <ChevronRight className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                      <ChevronRight className="w-4 h-4 text-gray-500 mt-0.5 shrink-0" />
                       <div>
                         <span className="font-semibold text-gray-600">Tidak</span> →
                         <span className="ml-1 font-semibold text-secondary">Gunakan PUC + Asumsi Ekonomi</span>
@@ -372,7 +372,7 @@ export default function PanduanPage() {
               debit: "Dr. Beban Imbalan Kerja  xxx",
               kredit: "Kr. Liabilitas Imbalan Pasca Kerja  xxx",
               ket: "Dicatat sebagai liabilitas jangka panjang. Nilainya adalah present value dari seluruh imbalan yang sudah 'diperoleh' karyawan hingga tanggal valuasi.",
-              warna: "border-secondary",
+              warna: "bg-secondary",
             },
             {
               akun: "Biaya Jasa Kini (CSC)",
@@ -380,7 +380,7 @@ export default function PanduanPage() {
               debit: "Dr. Biaya Personalia / Beban Usaha  xxx",
               kredit: "Kr. Liabilitas Imbalan Pasca Kerja  xxx",
               ket: "Beban tahun berjalan — kenaikan NKKIP karena karyawan bekerja 1 tahun lagi. Diakui sebagai beban operasional.",
-              warna: "border-emerald-500",
+              warna: "bg-emerald-500",
             },
             {
               akun: "Biaya Bunga (IC)",
@@ -388,11 +388,12 @@ export default function PanduanPage() {
               debit: "Dr. Biaya Bunga  xxx",
               kredit: "Kr. Liabilitas Imbalan Pasca Kerja  xxx",
               ket: "= Tingkat diskonto × NKKIP awal periode. Mencerminkan 'bunga' atas kewajiban yang sudah ada. Digunakan saat menyajikan rekonsiliasi NKKIP antar periode.",
-              warna: "border-amber-400",
+              warna: "bg-amber-400",
             },
           ].map(({ akun, pos, debit, kredit, ket, warna }) => (
-            <div key={akun} className={`border-l-4 ${warna} pl-4 py-1`}>
+            <div key={akun} className="py-1">
               <div className="flex items-center gap-2 mb-1">
+                <span className={`inline-block h-2 w-2 rounded-full shrink-0 ${warna}`} />
                 <p className="font-semibold text-gray-900">{akun}</p>
                 <Pill label={pos} variant="blue" />
               </div>
@@ -436,7 +437,7 @@ export default function PanduanPage() {
               <div key={c.label} className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                 <div className="bg-gray-50 px-4 py-2 border-b border-gray-100">
                   <p className="font-medium text-gray-800 text-xs">{c.label}
-                    <span className="ml-2 text-gray-400">
+                    <span className="ml-2 text-gray-500">
                       (masuk usia {c.usiaMasuk}, sekarang {c.usiaSekarang}, pensiun {c.usiaPensiun})
                     </span>
                   </p>

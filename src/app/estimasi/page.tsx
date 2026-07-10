@@ -36,18 +36,18 @@ function BatchResult({ hasil, buckets }: { hasil: HasilBatch; buckets?: typeof D
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <Card className="border-l-4 border-secondary rounded-l-none">
+        <Card className="bg-secondary/5 border-secondary/25">
           <CardContent className="pt-4">
             <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Total NKKIP (DBO)</p>
             <p className="text-2xl font-bold text-gray-900">{formatRupiah(hasil.totalNKKIP)}</p>
-            <p className="text-xs text-gray-400 mt-1">{hasil.totalKaryawan} karyawan</p>
+            <p className="text-xs text-gray-500 mt-1">{hasil.totalKaryawan} karyawan</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-4">
             <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Total Biaya Jasa Kini</p>
             <p className="text-2xl font-bold text-gray-900">{formatRupiah(hasil.totalBiayaJasa)}</p>
-            <p className="text-xs text-gray-400 mt-1">per tahun</p>
+            <p className="text-xs text-gray-500 mt-1">per tahun</p>
           </CardContent>
         </Card>
       </div>
@@ -59,7 +59,7 @@ function BatchResult({ hasil, buckets }: { hasil: HasilBatch; buckets?: typeof D
           <span className="font-semibold text-gray-800">
             {formatRupiah(hasil.totalNKKIP / hasil.totalKaryawan)}
           </span>
-          <span className="text-gray-400 ml-2">(NKKIP)</span>
+          <span className="text-gray-500 ml-2">(NKKIP)</span>
         </div>
       )}
 
@@ -252,7 +252,7 @@ export default function EstimasiPage() {
         {/* MODE 1 */}
         <TabsContent value="rata-rata">
           <div className="space-y-4">
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <Input
                 label="Jumlah karyawan"
                 type="number"
@@ -347,6 +347,7 @@ export default function EstimasiPage() {
                           placeholder="0"
                           value={b.jumlah}
                           onChange={e => setBuckets(prev => prev.map((r, j) => j === i ? { ...r, jumlah: e.target.value } : r))}
+                          aria-label={`Jumlah karyawan kelompok ${b.label}`}
                           className="w-24 rounded border border-gray-300 px-2 py-1 text-sm focus:ring-1 focus:ring-secondary focus:border-secondary outline-none"
                         />
                       </td>
@@ -356,6 +357,7 @@ export default function EstimasiPage() {
                           step="0.5"
                           value={b.usia}
                           onChange={e => setBuckets(prev => prev.map((r, j) => j === i ? { ...r, usia: e.target.value } : r))}
+                          aria-label={`Rata-rata usia kelompok ${b.label}`}
                           className="w-20 rounded border border-gray-300 px-2 py-1 text-sm focus:ring-1 focus:ring-secondary focus:border-secondary outline-none"
                         />
                       </td>
@@ -365,6 +367,7 @@ export default function EstimasiPage() {
                           step="0.5"
                           value={b.mk}
                           onChange={e => setBuckets(prev => prev.map((r, j) => j === i ? { ...r, mk: e.target.value } : r))}
+                          aria-label={`Rata-rata masa kerja kelompok ${b.label}`}
                           className="w-20 rounded border border-gray-300 px-2 py-1 text-sm focus:ring-1 focus:ring-secondary focus:border-secondary outline-none"
                         />
                       </td>
@@ -376,6 +379,7 @@ export default function EstimasiPage() {
                             const raw = String(parseCurrency(e.target.value) || '')
                             setBuckets(prev => prev.map((r, j) => j === i ? { ...r, upah: raw } : r))
                           }}
+                          aria-label={`Rata-rata upah kelompok ${b.label}`}
                           className="w-36 rounded border border-gray-300 px-2 py-1 text-sm focus:ring-1 focus:ring-secondary focus:border-secondary outline-none"
                           placeholder="0"
                         />
@@ -385,7 +389,7 @@ export default function EstimasiPage() {
                   <tr className="bg-gray-100 font-semibold">
                     <td className="px-3 py-2">Total</td>
                     <td className="px-3 py-2">{totalBucket.toLocaleString('id-ID')}</td>
-                    <td colSpan={3} className="px-3 py-2 text-gray-400 text-xs">karyawan</td>
+                    <td colSpan={3} className="px-3 py-2 text-gray-500 text-xs">karyawan</td>
                   </tr>
                 </tbody>
               </table>

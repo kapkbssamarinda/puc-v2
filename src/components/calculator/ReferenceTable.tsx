@@ -47,6 +47,7 @@ export function ReferenceTable({ masaKerjaLalu, masaKerjaTotal }: Props) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
         className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
       >
         <span className="text-sm font-medium text-gray-700">Tabel Referensi PSG &amp; UPMK</span>
@@ -126,7 +127,7 @@ export function ReferenceTable({ masaKerjaLalu, masaKerjaTotal }: Props) {
             </div>
           </div>
 
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-gray-500">
             Catatan: lompatan UPMK dari 8 ke 10 bulan di MK ≥ 24 tahun menentukan jendela atribusi maksimum (24 tahun) sesuai DSAK IAI April 2022.
           </p>
         </div>

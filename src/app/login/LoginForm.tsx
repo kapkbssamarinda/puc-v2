@@ -120,7 +120,7 @@ export default function LoginForm({ callbackUrl, error: initialError }: LoginFor
         </CardContent>
       </Card>
 
-      <div className="text-center text-xs text-gray-400 mt-6 space-y-1">
+      <div className="text-center text-xs text-gray-500 mt-6 space-y-1">
         <p>Akses terbatas untuk auditor KAP yang terdaftar.</p>
         <p>
           Silahkan hubungi nomor WhatsApp berikut untuk mendapatkan akses{" "}

@@ -17,12 +17,16 @@ export function ProbabilityTable({ tabel, usiaSekarang }: Props) {
 
   return (
     <Card>
-      <CardHeader
-        className="py-3 px-4 cursor-pointer select-none flex flex-row items-center justify-between gap-2"
-        onClick={() => setTerbuka((p) => !p)}
-      >
-        <CardTitle className="text-sm">Tabel Probabilitas Multiple Decrement</CardTitle>
-        <span className="text-xs text-gray-400">{terbuka ? '▲ Sembunyikan' : '▼ Tampilkan'}</span>
+      <CardHeader className="p-0">
+        <button
+          type="button"
+          onClick={() => setTerbuka((p) => !p)}
+          aria-expanded={terbuka}
+          className="w-full py-3 px-4 flex flex-row items-center justify-between gap-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-secondary"
+        >
+          <CardTitle className="text-sm">Tabel Probabilitas Multiple Decrement</CardTitle>
+          <span className="text-xs text-gray-500">{terbuka ? '▲ Sembunyikan' : '▼ Tampilkan'}</span>
+        </button>
       </CardHeader>
 
       {terbuka && (
@@ -85,7 +89,7 @@ export function ProbabilityTable({ tabel, usiaSekarang }: Props) {
               </tbody>
             </table>
           </div>
-          <div className="px-4 py-2 border-t border-gray-100 text-xs text-gray-400">
+          <div className="px-4 py-2 border-t border-gray-100 text-xs text-gray-500">
             Mortalita: TMI-2019 (Tabel Mortalitas Indonesia 2019) · Cacat: 10% × TMI-2019[usia]
           </div>
         </CardContent>

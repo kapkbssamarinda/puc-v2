@@ -5,15 +5,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { formatRupiah, formatPersen } from '@/lib/format'
 import { hitung } from '@/lib/engine'
+import { cn } from '@/lib/utils'
 import type { InputPerhitungan, MetodePerhitungan, HasilPerhitungan } from '@/lib/engine/types'
 
 const METODE_LIST: MetodePerhitungan[] = ['LIQUIDATION', 'PUC_SIMPLE', 'PUC_ECONOMIC', 'PUC_FULL']
 
-const METODE_META: Record<MetodePerhitungan, { label: string; warna: string; bg: string }> = {
-  LIQUIDATION:  { label: 'Liquidation',    warna: '#94a3b8', bg: 'bg-slate-400' },
-  PUC_SIMPLE:   { label: 'PUC Sederhana',  warna: '#60a5fa', bg: 'bg-blue-400' },
-  PUC_ECONOMIC: { label: 'PUC Ekonomi',    warna: '#2563eb', bg: 'bg-blue-600' },
-  PUC_FULL:     { label: 'PUC Penuh',      warna: '#1d4ed8', bg: 'bg-blue-700' },
+const METODE_META: Record<MetodePerhitungan, { label: string; bg: string }> = {
+  LIQUIDATION:  { label: 'Liquidation',    bg: 'bg-slate-400' },
+  PUC_SIMPLE:   { label: 'PUC Sederhana',  bg: 'bg-blue-400' },
+  PUC_ECONOMIC: { label: 'PUC Ekonomi',    bg: 'bg-secondary' },
+  PUC_FULL:     { label: 'PUC Penuh',      bg: 'bg-blue-700' },
 }
 
 interface Props {
@@ -46,7 +47,7 @@ export function MethodComparison({ input, metodeSaat }: Props) {
 
         {/* Bar chart horizontal (CSS) */}
         <div>
-          <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-2">NKKIP per Metode</p>
+          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest mb-2">NKKIP per Metode</p>
           <div className="flex flex-col gap-2">
             {METODE_LIST.map((m, i) => {
               const h   = hasilList[i]
@@ -69,7 +70,7 @@ export function MethodComparison({ input, metodeSaat }: Props) {
                       </span>
                     )}
                     {!h && (
-                      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-gray-400">N/A</span>
+                      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-gray-500">N/A</span>
                     )}
                   </div>
                   {isCurrent && <Badge variant="info" className="text-[10px] py-0.5 shrink-0">Aktif</Badge>}
@@ -101,10 +102,7 @@ export function MethodComparison({ input, metodeSaat }: Props) {
                   <tr key={m} className={isCurrent ? 'bg-blue-50 font-medium' : ''}>
                     <td className="px-3 py-2">
                       <div className="flex items-center gap-2">
-                        <span
-                          className="inline-block h-2.5 w-2.5 rounded-sm shrink-0"
-                          style={{ background: meta.warna }}
-                        />
+                        <span className={cn('inline-block h-2.5 w-2.5 rounded-sm shrink-0', meta.bg)} />
                         <span className="text-gray-700">{meta.label}</span>
                         {isCurrent && <Badge variant="info" className="text-[10px] py-0.5">Aktif</Badge>}
                       </div>
@@ -117,7 +115,7 @@ export function MethodComparison({ input, metodeSaat }: Props) {
                     </td>
                     <td className="text-right px-3 py-2 hidden sm:table-cell">
                       {isRef || delta === null ? (
-                        <span className="text-gray-400 text-xs">—</span>
+                        <span className="text-gray-500 text-xs">—</span>
                       ) : (
                         <span className={delta >= 0 ? 'text-emerald-600' : 'text-red-500'}>
                           {delta >= 0 ? '+' : ''}{formatPersen(delta)}
@@ -130,11 +128,11 @@ export function MethodComparison({ input, metodeSaat }: Props) {
             </tbody>
             <tfoot>
               <tr className="bg-gray-50">
-                <td colSpan={2} className="px-3 py-1.5 text-xs text-gray-400">
+                <td colSpan={2} className="px-3 py-1.5 text-xs text-gray-500">
                   Max BJK =&nbsp;
                   <span className="font-medium text-gray-600">{formatRupiah(maxBJK)}</span>
                 </td>
-                <td colSpan={2} className="px-3 py-1.5 text-xs text-gray-400 text-right">
+                <td colSpan={2} className="px-3 py-1.5 text-xs text-gray-500 text-right">
                   Baseline = Liquidation
                 </td>
               </tr>
@@ -142,7 +140,7 @@ export function MethodComparison({ input, metodeSaat }: Props) {
           </table>
         </div>
 
-        <p className="text-xs text-gray-400 leading-relaxed">
+        <p className="text-xs text-gray-500 leading-relaxed">
           Perbandingan di atas menggunakan parameter yang sama untuk semua metode.
           PSAK 24 mensyaratkan minimal <strong>PUC Ekonomi</strong> untuk pelaporan kepada publik.
         </p>
