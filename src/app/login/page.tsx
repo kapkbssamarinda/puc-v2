@@ -19,7 +19,7 @@ export default async function LoginPage({
   if (session) redirect(params.callbackUrl ?? "/kalkulator")
 
   return (
-    <div className="min-h-full flex items-center justify-center py-16 px-4 bg-surface">
+    <div className="min-h-screen flex items-center justify-center py-16 px-4 bg-surface">
       <LoginForm callbackUrl={params.callbackUrl} error={params.error} />
     </div>
   )

@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
 import { LogIn, Lock, Mail, Calculator, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
@@ -36,7 +35,6 @@ interface LoginFormProps {
 }
 
 export default function LoginForm({ callbackUrl, error: initialError }: LoginFormProps) {
-  const router = useRouter()
   const [serverError, setServerError] = useState<string | null>(
     initialError ? (ERROR_MESSAGES[initialError] ?? ERROR_MESSAGES.Default) : null
   )
@@ -60,8 +58,10 @@ export default function LoginForm({ callbackUrl, error: initialError }: LoginFor
       return
     }
 
-    router.push(callbackUrl ?? "/kalkulator")
-    router.refresh()
+    // Hard navigation (bukan router.push) supaya tidak menyajikan Router
+    // Cache basi dari sebelum idle-logout — meniru pola signOut() yang
+    // sudah selalu fresh lewat window.location.href.
+    window.location.href = callbackUrl ?? "/kalkulator"
   }
 
   return (
