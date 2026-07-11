@@ -1,6 +1,6 @@
 import type { NextAuthConfig } from "next-auth"
 
-const PUBLIC_ROUTES = ["/", "/login", "/panduan"]
+const PUBLIC_ROUTES = ["/login", "/panduan"]
 
 // Batas sesi absolut: 1 shift kerja. Auth.js (strategi JWT) me-refresh iat/exp
 // token di SETIAP request yang lewat middleware (lihat lib/actions/session.js
