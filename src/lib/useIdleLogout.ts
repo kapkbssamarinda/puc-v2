@@ -20,6 +20,11 @@ export function useIdleLogout() {
   const lastWriteRef = useRef(0)
 
   useEffect(() => {
+    if (status === "unauthenticated") {
+      localStorage.removeItem(STORAGE_KEY)
+      return
+    }
+
     if (status !== "authenticated") return
 
     let intervalId: ReturnType<typeof setInterval> | null = null
