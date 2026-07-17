@@ -130,7 +130,7 @@ Palet formal-korporat: satu navy institusional, satu biru aksi, satu emas otorit
 
 **Character:** Satu keluarga sans yang netral dan sangat terbaca, dibedakan lewat berat (400/500/600/700) dan ukuran — bukan lewat kepribadian font yang mencolok. Ini sengaja: tipografi tidak boleh "berbicara lebih keras" dari angka yang ditampilkannya.
 
-> **Catatan implementasi:** `tailwind.config.ts` mendeklarasikan `fontFamily.sans` sebagai `Inter, system-ui, sans-serif`, tapi Inter tidak dimuat lewat `next/font` atau `<link>` Google Fonts di manapun dalam `src/`. Browser jatuh ke `system-ui`. Ini bukan pilihan desain yang disengaja — catat sebagai temuan audit (font token diklaim tapi tidak benar-benar dimuat).
+> **Catatan implementasi:** Inter dimuat lewat `next/font/google` di `src/app/layout.tsx` dengan CSS variable `--font-inter` (`display: swap`), dan `tailwind.config.ts` mendeklarasikan `fontFamily.sans` sebagai `var(--font-inter), system-ui, sans-serif`. Fallback ke `system-ui` hanya terjadi jika font gagal dimuat.
 
 ### Hierarchy
 - **Headline** (700, `1.5rem`/24px, line-height 1.25): judul halaman/section utama (mis. "Ringkasan Hasil").
@@ -151,7 +151,9 @@ Datar dengan aksen minimal. Kartu (`Card`) naik dari latar `#F8FAFC` hanya lewat
 - **Header sticky** (`shadow-lg`): header yang sticky di atas konten yang bisa di-scroll — butuh sedikit lebih tegas karena selalu di depan.
 
 ### Named Rules
-**The Print-Safe Rule.** Semua shadow (`box-shadow`, `shadow-sm`, dst.) di-nolkan lewat `@media print` — kertas kerja yang dicetak tidak boleh membawa efek layar yang tidak relevan di atas kertas.
+**The Print-Safe Rule.** Semua shadow (`box-shadow`, `shadow-sm`, dst.) di-nolkan lewat `@media print` — kertas kerja yang dicetak tidak boleh membawa efek layar yang tidak relevan di atas kertas. Khusus konteks print, dua abu netral di luar palet layar dipakai secara sengaja: `#ccc` (border kartu/elemen) dan `#bbb` (garis tabel) — dipilih agar garis tetap terlihat di atas kertas tanpa memboroskan tinta; keduanya tidak boleh dipakai di UI layar.
+
+**The Semantic Z-Index Rule.** Lapisan diatur lewat token di `tailwind.config.ts`, bukan angka arbitrer: `z-header` (50, header sticky) → `z-modal` (100, dialog + backdrop) → `z-progress` (110, progress bar navigasi & skip-link). Nilai seperti `z-[9999]` dilarang.
 
 ## 5. Components
 
@@ -203,5 +205,5 @@ Datar dengan aksen minimal. Kartu (`Card`) naik dari latar `#F8FAFC` hanya lewat
 - **Don't** membuat grid kartu metrik seragam (angka besar + label kecil, diulang identik) sebagai template default untuk menyajikan hasil — hasil PUC harus tampil sebagai tabel/breakdown yang bisa ditelusuri, bukan "hero metric" ala dashboard SaaS.
 - **Don't** menambahkan eyebrow kapital kecil bertracking lebar di atas tiap section (mis. "HASIL" · "RINGKASAN" · "DETAIL") — ini scaffolding AI generik yang tidak ada presedennya di sistem ini.
 - **Don't** memakai border-left/right berwarna tebal sebagai aksen dekoratif pada card atau alert — gunakan latar tint penuh (seperti pada `Alert`/`Badge`) atau ikon, bukan garis samping.
-- **Don't** membiarkan token font (`fontFamily.sans: Inter`) dideklarasikan tanpa benar-benar memuat font-nya — jika Inter tetap jadi pilihan, muat lewat `next/font/google` agar tidak diam-diam jatuh ke `system-ui`.
+- **Don't** mendeklarasikan token font tanpa benar-benar memuat font-nya — Inter dimuat lewat `next/font/google` (variable `--font-inter`); jangan menambah keluarga font baru tanpa memuatnya dengan cara yang sama.
 - **Don't** memakai warna hangat/cream sebagai latar utama "karena terasa lebih ramah" — latar netral dingin (`#F8FAFC`) adalah bagian dari nada formal-korporat, bukan kebetulan.

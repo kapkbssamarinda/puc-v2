@@ -1,4 +1,4 @@
-import { forwardRef, type SelectHTMLAttributes } from 'react'
+import { forwardRef, useId, type SelectHTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
@@ -10,7 +10,11 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
   ({ className, label, helperText, error, containerClassName, id, children, ...props }, ref) => {
-    const selectId = id ?? label?.toLowerCase().replace(/\s+/g, '-')
+    // useId menjamin id unik meski dua select berlabel sama di satu halaman
+    const autoId = useId()
+    const selectId = id ?? autoId
+    const messageId = `${selectId}-message`
+    const hasMessage = Boolean(error || helperText)
     return (
       <div className={cn('flex flex-col gap-1', containerClassName)}>
         {label && (
@@ -22,6 +26,8 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         <select
           ref={ref}
           id={selectId}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={hasMessage ? messageId : undefined}
           className={cn(
             'flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm',
             'focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-0 focus:border-secondary',
@@ -36,8 +42,8 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         >
           {children}
         </select>
-        {error && <p className="text-xs text-red-600">{error}</p>}
-        {helperText && !error && <p className="text-xs text-gray-500">{helperText}</p>}
+        {error && <p id={messageId} className="text-xs text-red-600">{error}</p>}
+        {helperText && !error && <p id={messageId} className="text-xs text-gray-500">{helperText}</p>}
       </div>
     )
   },

@@ -1,4 +1,4 @@
-import { forwardRef, type InputHTMLAttributes, type ReactNode } from 'react'
+import { forwardRef, useId, type InputHTMLAttributes, type ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 
 type OmitHTMLPrefix = Omit<InputHTMLAttributes<HTMLInputElement>, 'prefix'>
@@ -14,7 +14,11 @@ interface InputProps extends OmitHTMLPrefix {
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, label, helperText, error, prefix, suffix, containerClassName, id, ...props }, ref) => {
-    const inputId = id ?? label?.toLowerCase().replace(/\s+/g, '-')
+    // useId menjamin id unik meski dua input berlabel sama di satu halaman
+    const autoId = useId()
+    const inputId = id ?? autoId
+    const messageId = `${inputId}-message`
+    const hasMessage = Boolean(error || helperText)
     return (
       <div className={cn('flex flex-col gap-1', containerClassName)}>
         {label && (
@@ -32,6 +36,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             id={inputId}
+            aria-invalid={error ? true : undefined}
+            aria-describedby={hasMessage ? messageId : undefined}
             className={cn(
               'flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm',
               'placeholder:text-gray-500',
@@ -51,8 +57,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             </span>
           )}
         </div>
-        {error && <p className="text-xs text-red-600">{error}</p>}
-        {helperText && !error && <p className="text-xs text-gray-500">{helperText}</p>}
+        {error && <p id={messageId} className="text-xs text-red-600">{error}</p>}
+        {helperText && !error && <p id={messageId} className="text-xs text-gray-500">{helperText}</p>}
       </div>
     )
   },

@@ -7,7 +7,6 @@ import { useId, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { useFocusTrap } from "@/lib/useFocusTrap";
-import Swal from "sweetalert2";
 
 const navItems = [
   { href: "/kalkulator", label: "Kalkulator", icon: Calculator, short: "Kalkulator" },
@@ -20,6 +19,7 @@ export default function Header() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
+  const [logoutOpen, setLogoutOpen] = useState(false);
   const { data: session } = useSession();
 
   function handleProtectedClick(e: React.MouseEvent) {
@@ -29,26 +29,16 @@ export default function Header() {
     }
   }
 
-  const handleLogout = async () => {
-    const result = await Swal.fire({
-      title: "Apakah anda ingin keluar?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#2563eb", // Tailwind blue-600 (Primary color match roughly)
-      cancelButtonColor: "#dc2626", // Tailwind red-600
-      confirmButtonText: "Ya, Keluar!",
-      cancelButtonText: "Batal",
-      reverseButtons: true
-    });
-    
-    if (result.isConfirmed) {
-      setMenuOpen(false);
-      signOut({ callbackUrl: "/login" });
-    }
+  const handleLogout = () => setLogoutOpen(true);
+
+  const confirmLogout = () => {
+    setLogoutOpen(false);
+    setMenuOpen(false);
+    signOut({ callbackUrl: "/login" });
   };
 
   return (
-    <header className="bg-primary text-white shadow-lg sticky top-0 z-50">
+    <header className="bg-primary text-white shadow-lg sticky top-0 z-header">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -104,7 +94,7 @@ export default function Header() {
             {/* Sign-out — tampil hanya saat sudah login */}
             {session && (
               <div className="flex items-center gap-2 ml-2 pl-2 border-l border-primary-600">
-                <span className="text-xs text-primary-300 hidden lg:block max-w-[120px] truncate">
+                <span className="text-xs text-primary-200 hidden lg:block max-w-[120px] truncate">
                   {session.user?.name ?? session.user?.email}
                 </span>
                 <button
@@ -121,9 +111,11 @@ export default function Header() {
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden p-2 rounded-md text-primary-200 hover:text-white hover:bg-primary-600 transition-colors"
+            className="md:hidden p-3 -mr-1 rounded-md text-primary-200 hover:text-white hover:bg-primary-600 transition-colors"
             onClick={() => setMenuOpen((v) => !v)}
-            aria-label="Toggle menu"
+            aria-label="Buka menu navigasi"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav"
           >
             {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -132,7 +124,7 @@ export default function Header() {
 
       {/* Mobile nav */}
       {menuOpen && (
-        <div className="md:hidden border-t border-primary-600 bg-primary-800">
+        <div id="mobile-nav" className="md:hidden border-t border-primary-600 bg-primary-800">
           <nav className="max-w-7xl mx-auto px-4 py-2 flex flex-col gap-1">
             {navItems.map(({ href, label, icon: Icon }) => (
               <Link
@@ -161,7 +153,7 @@ export default function Header() {
 
             {session && (
               <>
-                <div className="px-3 py-1.5 text-xs text-primary-400 border-t border-primary-600 mt-1 pt-2">
+                <div className="px-3 py-1.5 text-xs text-primary-200 border-t border-primary-600 mt-1 pt-2">
                   {session.user?.name ?? session.user?.email}
                 </div>
                 {session.user?.role === "admin" && (
@@ -192,7 +184,70 @@ export default function Header() {
         </div>
       )}
       {alertOpen && <LoginRequiredDialog onClose={() => setAlertOpen(false)} />}
+      {logoutOpen && (
+        <LogoutConfirmDialog
+          onConfirm={confirmLogout}
+          onClose={() => setLogoutOpen(false)}
+        />
+      )}
     </header>
+  );
+}
+
+function LogoutConfirmDialog({
+  onConfirm,
+  onClose,
+}: {
+  onConfirm: () => void;
+  onClose: () => void;
+}) {
+  const titleId = useId();
+  const trapRef = useFocusTrap(onClose);
+
+  return (
+    <div
+      className="fixed inset-0 z-modal flex items-center justify-center p-4 bg-primary-900/45"
+      onClick={onClose}
+    >
+      <div
+        ref={trapRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 flex flex-col items-center gap-4 outline-none"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center">
+          <LogOut className="w-7 h-7 text-red-600" />
+        </div>
+
+        <div className="text-center">
+          <h2 id={titleId} className="text-base font-semibold text-gray-900">
+            Keluar dari aplikasi?
+          </h2>
+          <p className="text-sm text-gray-600 mt-1">
+            Sesi Anda akan diakhiri dan data yang belum diekspor tidak disimpan.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-2 w-full mt-1">
+          <button
+            onClick={onConfirm}
+            className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors"
+          >
+            <LogOut className="w-4 h-4" />
+            Ya, Keluar
+          </button>
+          <button
+            onClick={onClose}
+            className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+          >
+            Batal
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -202,7 +257,7 @@ function LoginRequiredDialog({ onClose }: { onClose: () => void }) {
 
   return (
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-primary-900/45"
+      className="fixed inset-0 z-modal flex items-center justify-center p-4 bg-primary-900/45"
       onClick={onClose}
     >
       <div

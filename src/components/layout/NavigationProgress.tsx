@@ -17,29 +17,42 @@ export function useNavigationLoader() {
   return useContext(NavigationContext)
 }
 
+// Navigasi client-side biasanya instan — bar hanya muncul jika transisi
+// melewati ambang ini, supaya tidak berkedip pada navigasi cepat.
+const SHOW_DELAY_MS = 150
+// Failsafe: sembunyikan bar jika navigasi tidak pernah menyelesaikan pathname.
+const FAILSAFE_MS = 8000
+
 export function NavigationProgressProvider({
   children,
 }: {
   children: React.ReactNode
 }) {
   const [isLoading, setIsLoading] = useState(false)
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const showTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const failsafeRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const pathname = usePathname()
 
+  function clearTimers() {
+    if (showTimerRef.current) clearTimeout(showTimerRef.current)
+    if (failsafeRef.current) clearTimeout(failsafeRef.current)
+  }
+
   function startLoading() {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current)
-    setIsLoading(true)
-    timeoutRef.current = setTimeout(() => setIsLoading(false), 2000)
+    clearTimers()
+    showTimerRef.current = setTimeout(() => setIsLoading(true), SHOW_DELAY_MS)
+    failsafeRef.current = setTimeout(() => setIsLoading(false), FAILSAFE_MS)
   }
 
   function stopLoading() {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    clearTimers()
     setIsLoading(false)
   }
 
   // Hentikan loading saat pathname berubah (navigasi selesai)
   useEffect(() => {
     stopLoading()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
 
   // Intercept klik pada elemen <a> internal
@@ -81,48 +94,24 @@ export function NavigationProgressProvider({
 
     document.addEventListener("click", handleClick, { capture: true })
     return () => document.removeEventListener("click", handleClick, { capture: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <NavigationContext.Provider value={{ startLoading, stopLoading }}>
       {children}
 
-      {/* Overlay loading — z-[9999] agar di atas Header (z-50) */}
-      <div
-        className={`fixed inset-0 z-[9999] flex items-center justify-center transition-opacity duration-200 bg-primary-700/85 ${
-          isLoading ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
-        aria-hidden={!isLoading}
-      >
-        <div className="backdrop-blur-sm absolute inset-0" />
-        <div className="relative flex flex-col items-center gap-4 bg-primary rounded-2xl px-10 py-8 shadow-2xl">
-          {/* Spinner */}
-          <svg
-            className="w-12 h-12 animate-spin text-accent"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle
-              className="opacity-20"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="3"
-            />
-            <path
-              className="opacity-90"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-            />
-          </svg>
-
-          <span className="text-sm font-medium text-primary-100 tracking-wide">
-            Memuat halaman…
-          </span>
+      {/* Progress bar tipis di tepi atas — tidak memblokir konten */}
+      {isLoading && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed top-0 left-0 right-0 z-progress h-0.5 bg-secondary-100"
+        >
+          <div className="nav-progress-bar h-full bg-secondary" />
+          <span className="sr-only">Memuat halaman…</span>
         </div>
-      </div>
+      )}
     </NavigationContext.Provider>
   )
 }

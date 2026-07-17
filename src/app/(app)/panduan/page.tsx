@@ -266,7 +266,7 @@ export default function PanduanPage() {
                 <tr key={aspek} className="hover:bg-gray-50">
                   <td className="px-3 py-2 font-medium text-gray-700">{aspek}</td>
                   {vals.map((v, i) => (
-                    <td key={i} className={`px-3 py-2 text-center text-gray-600 ${i === 2 ? "bg-blue-50" : ""}`}>{v}</td>
+                    <td key={i} className={`px-3 py-2 text-center ${i === 2 ? "bg-blue-50 text-blue-900" : "text-gray-600"}`}>{v}</td>
                   ))}
                 </tr>
               ))}

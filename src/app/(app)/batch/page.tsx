@@ -11,9 +11,6 @@ import { Alert } from '@/components/ui/Alert'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs'
 import { formatRupiah, formatTahunBulan, formatTanggal } from '@/lib/format'
 import { hitung, hitungBatch } from '@/lib/engine'
-import { parseXLSX, downloadXLSXTemplate } from '@/lib/csv/parser'
-import { exportExcelBatch, exportExcelRingkas } from '@/lib/export/excel'
-import { exportPDFBatch } from '@/lib/export/pdf'
 import { JurnalPanel }       from '@/components/results/JurnalPanel'
 import { CalculationSteps } from '@/components/results/CalculationSteps'
 import { DetailsTable }     from '@/components/results/DetailsTable'
@@ -328,7 +325,14 @@ function TabCSV({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" onClick={downloadXLSXTemplate}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={async () => {
+            const { downloadXLSXTemplate } = await import('@/lib/csv/parser')
+            downloadXLSXTemplate()
+          }}
+        >
           <Download className="h-4 w-4 mr-1" />
           Download Template Excel
         </Button>
@@ -580,6 +584,7 @@ export default function BatchPage() {
 
   async function handleCSVFile(file: File) {
     const buffer = await file.arrayBuffer()
+    const { parseXLSX } = await import('@/lib/csv/parser')
     const result = parseXLSX(buffer)
     setCsvData(result.data)
     setCsvErrors(result.errors)
@@ -774,7 +779,10 @@ export default function BatchPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => exportExcelBatch(hasilBatch)}
+                onClick={async () => {
+                  const { exportExcelBatch } = await import('@/lib/export/excel')
+                  exportExcelBatch(hasilBatch)
+                }}
                 title="Export Excel lengkap"
               >
                 <FileSpreadsheet className="h-4 w-4 mr-1" />
@@ -783,7 +791,10 @@ export default function BatchPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => exportExcelRingkas(hasilList, hasilBatch.tanggalPerhitungan)}
+                onClick={async () => {
+                  const { exportExcelRingkas } = await import('@/lib/export/excel')
+                  exportExcelRingkas(hasilList, hasilBatch.tanggalPerhitungan)
+                }}
                 title="Export kertas kerja ringkas"
               >
                 <Download className="h-4 w-4 mr-1" />
@@ -792,7 +803,10 @@ export default function BatchPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => exportPDFBatch(hasilBatch)}
+                onClick={async () => {
+                  const { exportPDFBatch } = await import('@/lib/export/pdf')
+                  exportPDFBatch(hasilBatch)
+                }}
                 title="Export PDF"
               >
                 <FileText className="h-4 w-4 mr-1" />

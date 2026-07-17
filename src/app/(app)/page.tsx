@@ -51,7 +51,7 @@ const metodePerhitungan = [
     deskripsi:
       "Pesangon yang harus dibayar jika seluruh karyawan diberhentikan hari ini. Dasar perbandingan, bukan metode PSAK 24.",
     psak: false,
-    tagColor: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
+    tagColor: "bg-slate-100 text-slate-700",
     tag: "Baseline",
   },
   {
@@ -60,7 +60,7 @@ const metodePerhitungan = [
     deskripsi:
       "Metode Projected Unit Credit menggunakan gaji saat ini tanpa proyeksi inflasi atau diskonto. Sesuai Contoh 3 DSAK IAI 2022.",
     psak: true,
-    tagColor: "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+    tagColor: "bg-blue-50 text-blue-700",
     tag: "Contoh 3 DSAK IAI",
   },
   {
@@ -69,7 +69,7 @@ const metodePerhitungan = [
     deskripsi:
       "PUC dengan proyeksi kenaikan gaji dan diskonto obligasi pemerintah. Sesuai Contoh 4 DSAK IAI 2022.",
     psak: true,
-    tagColor: "bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300",
+    tagColor: "bg-indigo-50 text-indigo-700",
     tag: "Contoh 4 DSAK IAI",
   },
   {
@@ -78,7 +78,7 @@ const metodePerhitungan = [
     deskripsi:
       "PUC lengkap dengan asumsi demografi (mortalitas, turnover, disabilitas). Standar laporan aktuaris untuk audit PSAK 24.",
     psak: true,
-    tagColor: "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300",
+    tagColor: "bg-emerald-50 text-emerald-700",
     tag: "Standar Audit",
   },
 ];
@@ -145,7 +145,7 @@ export default function HomePage() {
             <Link
               key={href}
               href={href}
-              className="group bg-white dark:bg-primary-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 ease-expo-out overflow-hidden border border-gray-100 dark:border-primary-700 hover:-translate-y-1"
+              className="group bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden border border-gray-200"
             >
               <div className={`${color} p-4 flex items-center justify-between`}>
                 <div className="flex items-center gap-3">
@@ -162,9 +162,9 @@ export default function HomePage() {
                 </span>
               </div>
               <div className="p-5">
-                <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{description}</p>
-                <div className="mt-4 flex items-center gap-1 text-secondary dark:text-secondary-400 text-sm font-medium group-hover:gap-2 transition-all">
-                  Buka <ArrowRight className="w-4 h-4" />
+                <p className="text-gray-600 text-sm leading-relaxed">{description}</p>
+                <div className="mt-4 flex items-center gap-1 text-secondary text-sm font-medium">
+                  Buka <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
                 </div>
               </div>
             </Link>
@@ -175,8 +175,8 @@ export default function HomePage() {
       {/* ── Metode Perhitungan ── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">4 Metode Perhitungan</h2>
-          <p className="text-muted dark:text-gray-400">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">4 Metode Perhitungan</h2>
+          <p className="text-muted">
             Dari baseline non-PSAK hingga standar audit penuh. Pilih sesuai kebutuhan analisis.
           </p>
         </div>
@@ -184,44 +184,44 @@ export default function HomePage() {
           {metodePerhitungan.map((m) => (
             <div
               key={m.kode}
-              className="bg-white dark:bg-primary-800 rounded-xl border border-gray-200 dark:border-primary-700 p-6 shadow-sm hover:shadow-md transition-shadow duration-300"
+              className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow duration-200"
             >
               <div className="flex items-start justify-between gap-3 mb-3">
-                <h3 className="font-semibold text-gray-900 dark:text-white text-base">{m.nama}</h3>
+                <h3 className="font-semibold text-gray-900 text-base">{m.nama}</h3>
                 <div className="flex gap-2 flex-shrink-0">
                   <span className={`text-xs px-2.5 py-1 rounded-full font-medium whitespace-nowrap ${m.tagColor}`}>
                     {m.tag}
                   </span>
                   {m.psak && (
-                    <span className="text-xs bg-green-500/10 text-green-700 dark:text-green-400 px-2.5 py-1 rounded-full font-medium whitespace-nowrap">
+                    <span className="text-xs bg-green-500/10 text-green-700 px-2.5 py-1 rounded-full font-medium whitespace-nowrap">
                       PSAK 24
                     </span>
                   )}
                 </div>
               </div>
-              <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{m.deskripsi}</p>
+              <p className="text-gray-600 text-sm leading-relaxed">{m.deskripsi}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* ── Fitur Kunci ── */}
-      <section className="bg-white dark:bg-primary-900 border-y border-gray-100 dark:border-primary-800">
+      <section className="bg-white border-y border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+              <h2 className="text-2xl font-bold text-gray-900 mb-3">
                 Dirancang untuk Junior Auditor
               </h2>
-              <p className="text-muted dark:text-gray-400 leading-relaxed mb-6">
+              <p className="text-muted leading-relaxed mb-6">
                 Tidak perlu latar belakang aktuaria. Setiap istilah teknis dilengkapi tooltip
                 penjelasan sederhana, dan setiap langkah perhitungan ditampilkan secara
                 transparan sehingga mudah ditelusuri dan diverifikasi.
               </p>
               <ul className="space-y-3">
                 {fiturKunci.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-sm text-gray-700 dark:text-gray-300">
-                    <CheckCircle2 className="w-5 h-5 text-secondary dark:text-secondary-400 flex-shrink-0 mt-0.5" />
+                  <li key={f} className="flex items-start gap-2.5 text-sm text-gray-700">
+                    <CheckCircle2 className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" />
                     {f}
                   </li>
                 ))}
@@ -229,7 +229,7 @@ export default function HomePage() {
             </div>
 
             {/* Ilustrasi output */}
-            <div className="bg-surface dark:bg-primary-800/50 rounded-xl p-6 border border-gray-200 dark:border-primary-700">
+            <div className="bg-surface rounded-xl p-6 border border-gray-200">
               <div className="space-y-3">
                 {[
                   {
@@ -244,11 +244,11 @@ export default function HomePage() {
                 ].map((item) => (
                   <div
                     key={item.label}
-                    className="flex items-center justify-between py-2.5 border-b border-gray-200 dark:border-primary-700/50 last:border-0"
+                    className="flex items-center justify-between py-2.5 border-b border-gray-200 last:border-0"
                   >
-                    <span className="text-sm text-muted dark:text-gray-400">{item.label}</span>
+                    <span className="text-sm text-muted">{item.label}</span>
                     <span
-                      className={`text-sm ${item.bold ? "font-bold text-primary dark:text-white" : "text-gray-700 dark:text-gray-300"}`}
+                      className={`text-sm ${item.bold ? "font-bold text-primary" : "text-gray-700"}`}
                     >
                       {item.nilai}
                     </span>
@@ -256,7 +256,7 @@ export default function HomePage() {
                 ))}
               </div>
               <div className="mt-4 text-center">
-                <span className="inline-flex items-center gap-1.5 text-xs text-muted dark:text-gray-400 bg-gray-100 dark:bg-primary-800 px-3 py-1.5 rounded-full">
+                <span className="inline-flex items-center gap-1.5 text-xs text-muted bg-gray-100 px-3 py-1.5 rounded-full">
                   <Info className="w-3.5 h-3.5" />
                   Contoh output · PUC Komprehensif
                 </span>
@@ -268,8 +268,8 @@ export default function HomePage() {
 
       {/* ── CTA ── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">Siap Menghitung?</h2>
-        <p className="text-muted dark:text-gray-400 mb-6 max-w-xl mx-auto">
+        <h2 className="text-2xl font-bold text-gray-900 mb-3">Siap Menghitung?</h2>
+        <p className="text-muted mb-6 max-w-xl mx-auto">
           Mulai dengan kalkulator individual untuk satu karyawan, atau langsung gunakan
           batch untuk seluruh perusahaan.
         </p>
@@ -283,7 +283,7 @@ export default function HomePage() {
           </Link>
           <Link
             href="/batch"
-            className="inline-flex items-center gap-2 bg-white dark:bg-primary-800 hover:bg-gray-50 dark:hover:bg-primary-700 text-primary dark:text-white font-semibold px-6 py-3 rounded-lg transition-colors border border-gray-300 dark:border-primary-700"
+            className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-primary font-semibold px-6 py-3 rounded-lg transition-colors border border-gray-300"
           >
             <Users className="w-5 h-5" />
             Batch Multi-Karyawan

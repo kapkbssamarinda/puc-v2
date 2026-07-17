@@ -357,7 +357,7 @@ function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-primary-900/45"
+      className="fixed inset-0 z-modal flex items-center justify-center p-4 bg-primary-900/45"
       onClick={onClose}
     >
       <div

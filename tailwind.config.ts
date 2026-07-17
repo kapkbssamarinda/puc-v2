@@ -55,7 +55,12 @@ const config: Config = {
         muted: "#64748B",
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+      },
+      zIndex: {
+        header: "50",
+        modal: "100",
+        progress: "110",
       },
     },
   },
