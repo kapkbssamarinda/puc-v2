@@ -5,14 +5,6 @@ export * from './benefit'
 export * from './attribution'
 export * from './probability'
 
-// ─── Konstanta Skalar ─────────────────────────────────────
-export {
-  USIA_PENSIUN_DEFAULT,
-  DEFAULT_TINGKAT_DISKONTO,
-  DEFAULT_TINGKAT_KENAIKAN_GAJI,
-  DEFAULT_TINGKAT_PENGUNDURAN_DIRI,
-} from './constants'
-
 // ─── Metode Perhitungan ───────────────────────────────────
 export { hitungLiquidation }   from './method-liquidation'
 export { hitungPUCSimple }     from './method-puc-simple'
@@ -25,11 +17,8 @@ import { hitungLiquidation } from './method-liquidation'
 import { hitungPUCSimple }   from './method-puc-simple'
 import { hitungPUCEconomic } from './method-puc-economic'
 import { hitungPUCFull }     from './method-puc-full'
+import { parseDate, selisihTahun } from './date'
 
-function parseDate(s: string): Date { return new Date(s + 'T00:00:00') }
-function selisihTahun(a: Date, b: Date): number {
-  return (b.getTime() - a.getTime()) / (365.25 * 24 * 60 * 60 * 1000)
-}
 
 interface ValidationResult {
   errors: string[]

@@ -112,7 +112,7 @@ src/
 │   └── results/      # ResultsSummary, CalculationSteps, FSNote, dll.
 └── lib/
     ├── engine/       # Domain: types, tables, attribution, probability, methods
-    ├── csv/          # Parser CSV (papaparse)
+    ├── csv/          # Parser CSV/Excel (xlsx)
     └── export/       # Excel (xlsx) + PDF (jspdf)
 ```
 

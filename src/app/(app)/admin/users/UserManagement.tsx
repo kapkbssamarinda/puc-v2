@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useId, useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Select } from "@/components/ui/Select"
 import { Badge } from "@/components/ui/Badge"
-import { useFocusTrap } from "@/lib/useFocusTrap"
+import { Dialog } from "@/components/ui/Dialog"
 
 export interface UserRecord {
   id: string
@@ -352,36 +352,24 @@ function Modal({
   onClose: () => void
   children: React.ReactNode
 }) {
-  const titleId = useId()
-  const trapRef = useFocusTrap(onClose)
-
   return (
-    <div
-      className="fixed inset-0 z-modal flex items-center justify-center p-4 bg-primary-900/45"
-      onClick={onClose}
-    >
-      <div
-        ref={trapRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        tabIndex={-1}
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-md outline-none"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-          <h2 id={titleId} className="font-semibold text-gray-900">{title}</h2>
-          <button
-            onClick={onClose}
-            aria-label="Tutup"
-            className="relative p-1 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 transition-colors before:absolute before:-inset-3 before:content-['']"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-        <div className="p-5">{children}</div>
-      </div>
-    </div>
+    <Dialog onClose={onClose} className="max-w-md">
+      {(titleId) => (
+        <>
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+            <h2 id={titleId} className="font-semibold text-gray-900">{title}</h2>
+            <button
+              onClick={onClose}
+              aria-label="Tutup"
+              className="relative p-1 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 transition-colors before:absolute before:-inset-3 before:content-['']"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="p-5">{children}</div>
+        </>
+      )}
+    </Dialog>
   )
 }
 

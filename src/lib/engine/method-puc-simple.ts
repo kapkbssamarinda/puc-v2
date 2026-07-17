@@ -16,11 +16,8 @@ import type { InputPerhitungan, HasilPerhitungan, DetailPerUsia } from './types'
 import { hitungImbalan } from './benefit'
 import { getFaktorPSG, getFaktorUPMK } from './tables'
 import { hitungAtribusi } from './attribution'
+import { parseDate, selisihTahun } from './date'
 
-function parseDate(s: string): Date { return new Date(s + 'T00:00:00') }
-function selisihTahun(a: Date, b: Date): number {
-  return (b.getTime() - a.getTime()) / (365.25 * 24 * 60 * 60 * 1000)
-}
 
 export function hitungPUCSimple(input: InputPerhitungan): HasilPerhitungan {
   const { karyawan, tanggalPerhitungan, usiaPensiun, regulasi, formulaResign } = input

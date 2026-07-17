@@ -23,11 +23,8 @@ import { hitungImbalan, proyeksikanUpah, hitungFaktorDiskonto } from './benefit'
 import { getFaktorPSG, getFaktorUPMK } from './tables'
 import { hitungAtribusi } from './attribution'
 import { buatTabelProbabilitas } from './probability'
+import { parseDate, selisihTahun } from './date'
 
-function parseDate(s: string): Date { return new Date(s + 'T00:00:00') }
-function selisihTahun(a: Date, b: Date): number {
-  return (b.getTime() - a.getTime()) / (365.25 * 24 * 60 * 60 * 1000)
-}
 
 export function hitungPUCFull(input: InputPerhitungan): HasilPerhitungan {
   const {
